@@ -1,4 +1,5 @@
-import { Text, View } from "react-native";
+import { Button } from "@react-navigation/elements";
+import { Alert, Text, View, StyleSheet } from "react-native";
 
 export default function Index() {
   return (
@@ -10,7 +11,18 @@ export default function Index() {
       }}
     >
       <Text>Holiwisss</Text>
-      <Text>Funciona porfi</Text>
+      <Text>Echa el freno madaleno</Text>
+      <Button onPress={() => alert("Holiwis")}>AAAAAAAAA</Button>
     </View>
   );
 }
+
+const style= StyleSheet.create({
+
+container: {
+
+  
+
+}
+
+});
