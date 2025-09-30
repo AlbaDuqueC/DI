@@ -3,16 +3,12 @@ import { Alert, Text, View, StyleSheet } from "react-native";
 
 export default function Index() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <View style={style.container}>
+
       <Text>Holiwisss</Text>
       <Text>Echa el freno madaleno</Text>
       <Button onPress={() => alert("Holiwis")}>AAAAAAAAA</Button>
+      
     </View>
   );
 }
@@ -20,9 +16,10 @@ export default function Index() {
 const style= StyleSheet.create({
 
 container: {
-
-  
-
+    backgroundColor: '#dabbeeff',
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
 }
 
 });
