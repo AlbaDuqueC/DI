@@ -1,6 +1,6 @@
 import {RepositoryPersona} from "../models/data/RepositoryPersona"
 
-class IndexVM {
+export class IndexVM {
   get personas() {
     return RepositoryPersona.getPersona();
   }

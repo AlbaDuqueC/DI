@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffd2ecff",
   },
   item: {
-    backgroundColor: "#ffeff5ff",
+    backgroundColor: "#fff5f9ff",
     padding: 15,
     marginVertical: 6,
     marginHorizontal: 16,
