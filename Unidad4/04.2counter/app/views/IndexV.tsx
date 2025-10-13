@@ -1,21 +1,43 @@
 import React from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
-import {RepositoryPersona} from "../models/data/RepositoryPersona"
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { RepositoryPersona } from "../models/data/RepositoryPersona";
 
 export default class IndexV extends React.Component {
+  state = {
+    selectedId: null, 
+  };
+
+  toggleDetails = (id:number) => {
+    this.setState((selectedId) => ({
+      selectedId: selectedId === id ? null : id, 
+    }));
+  };
+
   render() {
     const personas = RepositoryPersona.getPersona();
+    const { selectedId } = this.state;
 
     return (
       <View style={styles.container}>
         <FlatList
           data={personas}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.id.toString()} 
           renderItem={({ item }) => (
-            <View style={styles.item}>
-              <Text style={styles.text}>{item.nombre} {item.apellido}</Text>
-              <Text style={styles.id}>ID: {item.id}</Text>
-            </View>
+            <TouchableOpacity onPress={() => this.toggleDetails(item.id)}>
+              <View style={styles.item}>
+                <Text style={styles.text}>
+                  {item.nombre} {item.apellido} { selectedId === item.id ? "▲" : "▼" }
+                </Text>
+                
+                {selectedId === item.id && (
+                  <View style={styles.datos}>
+                    <Text>ID: {item.id}</Text>
+                    <Text>Nombre: {item.nombre}</Text>
+                    <Text>Apellido: {item.apellido}</Text>
+                  </View>
+                )}
+              </View>
+            </TouchableOpacity>
           )}
         />
       </View>
@@ -43,12 +65,9 @@ const styles = StyleSheet.create({
     // Sombra Android
     elevation: 3,
     justifyContent: "center",
-     alignItems: "center",
-
-     borderColor: "#6b096bff",
-     borderBottomWidth: 1,
-     
-
+    alignItems: "center",
+    borderColor: "#6b096bff",
+    borderBottomWidth: 1,
   },
   text: {
     fontSize: 18,
@@ -57,5 +76,11 @@ const styles = StyleSheet.create({
   id: {
     fontSize: 15,
     color: "#794573ff",
-  }
+  },
+  datos: {
+    marginTop: 10,
+    backgroundColor: "#f8c6ebff",
+    padding: 10,
+    borderRadius: 5,
+  },
 });
