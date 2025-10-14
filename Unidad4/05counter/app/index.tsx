@@ -1,15 +1,27 @@
-import { Text, View } from "react-native";
+// src/Index.tsx
+import React from 'react';
+import { ScrollView, View, StyleSheet } from 'react-native';
+import CustomButton from './CustomButton';
 
-export default function Index() {
+const Index: React.FC = () => {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <CustomButton text="Botón 1: Información" />
+      <CustomButton text="Botón 2: Acción" />
+      <CustomButton text="Botón 3: Confirmar" />
+      <CustomButton text="Botón 4: Cancelar" />
+    </ScrollView>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+});
+
+export default Index;
+
