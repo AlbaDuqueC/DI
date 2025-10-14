@@ -10,7 +10,7 @@ export class IndexVM {
     return lista.find(persona => persona.id === id);
   }
 
-  public obtenerDatosPersona(id: number): { id: string; nombre: string; apellido: string } | null {
+  obtenerDatosPersona(id: number): { id: string; nombre: string; apellido: string } | null {
     const persona = RepositoryPersona.getPersona().find(p => p.id === id);
     if (!persona) return null;
     return {
