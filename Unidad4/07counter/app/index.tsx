@@ -1,6 +1,6 @@
 // src/App.tsx
 import React, { useState } from 'react';
-import {View, Text, Pressable, ActivityIndicator, StyleSheet} from 'react-native';
+import { View, Text, Pressable, ActivityIndicator, StyleSheet } from 'react-native';
 
 
 const App: React.FC = () => {
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   successText: {
     marginTop: 20,
     fontSize: 18,
-    color: 'green',
+    color: '#2f1274ff',
   },
 });
 
