@@ -1,4 +1,4 @@
-import TarjetaProducto from "@/components/TarjetaProducto";
+import TarjetaProducto from "./components/TarjetaProducto";
 import React  from "react";
 import { useState } from "react";
 import { ImageSourcePropType, StatusBar, TouchableOpacity, Text, FlatList, StyleSheet, View } from "react-native";
@@ -6,10 +6,10 @@ import { ImageSourcePropType, StatusBar, TouchableOpacity, Text, FlatList, Style
 
 /* Reemplaza los require(...) por tus assets locales o URIs remotas según prefieras */
 const PRODUCTS: { id: string; name: string; price: number; image: ImageSourcePropType }[] = [
-  { id: "p1", name: "Wireless Earebbs", price: 79.99, image: require("./assets/earebbs.png") },
-  { id: "p2", name: "Compact Dron", price: 349.99, image: require("./assets/dron.png") },
-  { id: "p3", name: "Gaming", price: 129.99, image: require("./assets/gaming.png") },
-  { id: "p4", name: "Smartwatch X", price: 185.99, image: require("./assets/smartwatch.png") },
+  { id: "p1", name: "Gato", price: 79.99, image: require("../assets/images/gato.jpg") },
+  { id: "p2", name: "Compact Dron", price: 349.99, image: require("") },
+  { id: "p3", name: "Gaming", price: 129.99, image: require("") },
+  { id: "p4", name: "Smartwatch X", price: 185.99, image: require("") },
 ];
 
 export default function App() {

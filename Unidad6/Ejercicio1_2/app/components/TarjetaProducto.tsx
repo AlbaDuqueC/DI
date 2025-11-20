@@ -1,6 +1,6 @@
 import React from "react";
-import { ImageSourcePropType, Image, Text, StyleSheet, TextStyle, View } from "react-native";
-import BotonPersonalizado from "./botonPersonalizado";
+import { ImageSourcePropType, Image, Text, StyleSheet, View } from "react-native";
+import BotonPersonalizado from "./BotonPersona";
 
 export interface TarjetaProductoProps {
   name: string;
@@ -22,7 +22,7 @@ export default function TarjetaProducto({ name, price, Image: ImgSource, onAddTo
       </View>
 
       <View style={styles.info}>
-        <Text style={[styles.name, TextStyle]} numberOfLines={2}>{name}</Text>
+        <Text style={[styles.name]} numberOfLines={2}>{name}</Text>
         <Text style={styles.price}>{formattedPrice}</Text>
       </View>
 
