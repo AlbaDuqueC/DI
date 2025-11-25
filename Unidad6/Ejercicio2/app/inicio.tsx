@@ -4,7 +4,7 @@ export default function Bienvenida() {
   return (
     <ImageBackground
       source={{
-        uri: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fes.pinterest.com%2Fnerlexx0701%2Fpedazo-de-gato-tonto%2F&psig=AOvVaw3PMv-SyWuK818m3qczo3mR&ust=1763728482152000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCIDAsOjegJEDFQAAAAAdAAAAABAE"
+        uri: 'https://i.pinimg.com/1200x/70/0f/a4/700fa4e57dd8b56f59d6f4ee3cb278c4.jpg'
       }}
       style={styles.fondo}
       imageStyle={styles.imagenFondo}
@@ -28,7 +28,11 @@ const styles = StyleSheet.create({
   },
 
   imagenFondo: {
-    resizeMode: "cover",
+    
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    top: 0,
   },
 
   overlay: {

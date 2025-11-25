@@ -19,8 +19,10 @@ export default function Index() {
 
     <ImageBackground
       source={{
-        uri: "https://i.pinimg.com/236x/b0/30/c2/b030c22c6c98e7cd637d47981125659f.jpg"
-      }}>
+        uri: 'https://i.pinimg.com/236x/b0/30/c2/b030c22c6c98e7cd637d47981125659f.jpg'
+      }}
+      
+      style={styles.fondo}>
     
     <View style={styles.contenedor}>
       
@@ -120,6 +122,12 @@ const styles = StyleSheet.create({
     color: "#8d0057ff",
     fontWeight: "bold",
     textDecorationLine: "underline",
+  },
+  fondo: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    top: 0,
   },
 });
 
