@@ -1,5 +1,5 @@
 import { Persona } from "../entities/Persona";
 
-export interface IPersonaRepo {
+export interface IRepositoryPersonas {
      getListadoCompletoPersonas(): Persona[];
 }
