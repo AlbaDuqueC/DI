@@ -2,7 +2,6 @@ import { Container } from "inversify";
 import "reflect-metadata";
 import { PersonasRepo } from "../data/repositories/PersonaRepo";
 import { PersonasRepo100 } from "../data/repositories/PersonaRepo100";
-import { IPersonaRepo } from "../domain/interfaces/IPersonaRepo";
 import { PeopleListVM } from "../UI/ViewModel/PeopleListVM";
 import { TYPES } from "./types";
 
