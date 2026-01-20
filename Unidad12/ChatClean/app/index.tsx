@@ -4,11 +4,11 @@ import { Button, FlatList, StyleSheet, Text, TextInput, View } from 'react-nativ
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
+
 interface Message {
   user: string;
   message: string;
 }
-
 
 const ChatApp = () => {
   const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
