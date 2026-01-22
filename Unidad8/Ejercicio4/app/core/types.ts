@@ -13,12 +13,15 @@ export const TYPES = {
   IEliminarPersonaUseCase: 'IEliminarPersonaUseCase',
 
   // UseCases - Departamentos
-  IObtenerDepartamentosUseCase: 'IObtenerDepartamentosUseCase',
-  ICrearDepartamentoUseCase: 'ICrearDepartamentoUseCase',
-  IActualizarDepartamentoUseCase: 'IActualizarDepartamentoUseCase',
-  IEliminarDepartamentoUseCase: 'IEliminarDepartamentoUseCase',
+  IDepartamentoUseCase: 'IDepartamentoUseCase',
+  IPersonaUseCase: 'IPersonaUseCase',
+
 
   // ViewModels
   PersonasVM: 'PersonasVM',
   DepartamentosVM: 'DepartamentosVM',
+  EditarInsertarPersonaVM: 'EditarInsertarPersonaVM', // <-- Añade esta línea
+  EditarInsertarDepartamentoVM: 'EditarInsertarDepartamentoVM',
+
+  PersonaModel: 'PersonaModel',
 } as const;

@@ -1,7 +1,7 @@
-import { Persona } from "@/app/domain/entities/Persona";
+import { Persona } from '../../domain/entities/Persona';
 import { inject } from "inversify";
 import { TYPES } from "../../core/types";
-import { IPersonaRepo } from "../../domain/interfaces/IPersonaRepo";
+import { IRepositoryPersonas } from "../../domain/interfaces/IPersonaRepo";
 import {  makeAutoObservable } from "mobx";
 
 
@@ -16,7 +16,7 @@ export class PeopleListVM {
 
      constructor(
         @inject(TYPES.IRepositoryPersonas)
-        private RepositoryPersonas: IPersonaRepo
+        private RepositoryPersonas: IRepositoryPersonas
     ) {
 
 

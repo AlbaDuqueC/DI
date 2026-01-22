@@ -2,6 +2,7 @@
   "dependencies": {
     "@microsoft/signalr": "^10.0.0",
     "expo": "^54.0.31",
+    "inversify": "^7.11.0",
     "react": "18.2.0",
     "react-native": "0.71.0",
     "react-native-safe-area-context": "~5.6.0"

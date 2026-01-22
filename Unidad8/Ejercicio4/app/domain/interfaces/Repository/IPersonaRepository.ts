@@ -1,9 +1,11 @@
-import { Persona } from "../../entities/Persona";
+// src/domain/interfaces/repositories/IPersonaRepository.ts
+
+import { Persona } from '../../entities/Persona';
 
 export interface IPersonaRepository {
   getListaPersonas(): Promise<Persona[]>;
-  getPersonaPorId(id: number): Promise<Persona | null>;
-  crearPersona(persona: Persona): Promise<number>;
-  actualizarPersona(id: number, persona: Persona): Promise<number>;
-  eliminarPersona(id: number): Promise<number>;
+  getPersonaPorId(idPersona: number): Promise<Persona>;
+  crearPersona(personaNueva: Persona): Promise<number>;
+  actualizarPersona(idPersona: number, persona: Persona): Promise<number>;
+  eliminarPersona(idPersona: number): Promise<number>;
 }
