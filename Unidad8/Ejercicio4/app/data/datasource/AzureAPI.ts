@@ -9,7 +9,7 @@ export class AzureAPI {
 
   constructor() {
     // Aquí colocas la URL de tu API de Azure
-    this._apiUrl = 'https://tu-api-azure.azurewebsites.net/api';
+    this._apiUrl = 'https://signalrchat20260115133542-dzc0arewgxbrh5gu.spaincentral-01.azurewebsites.net/api';
   }
 
   public getConnection(): string {

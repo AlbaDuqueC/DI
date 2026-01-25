@@ -23,9 +23,8 @@ export class EditarInsertarPersonaVM {
 
   private readonly _personaUseCase: IPersonaUseCase;
 
-  static injectable= [TYPES.IPersonaUseCase]
 
-  constructor( personaUseCase: IPersonaUseCase) {
+  constructor( @inject(TYPES.IPersonaUseCase) personaUseCase: IPersonaUseCase) {
     this._personaUseCase = personaUseCase;
     makeObservable(this);
   }

@@ -1,5 +1,3 @@
-// src/data/repositories/PersonaRepositoryAzure.ts
-
 import { injectable, inject } from 'inversify';
 import 'reflect-metadata';
 import { IPersonaRepository } from '../../domain/interfaces/Repository/IPersonaRepository';
@@ -12,10 +10,10 @@ import { TYPES } from '../../core/types';
 export class PersonaRepositoryAzure implements IPersonaRepository {
   private readonly _api: AzureAPI;
 
-  static inject = [TYPES.AzureAPI];
-
-  
-  constructor(api: AzureAPI) {
+  constructor(
+    // ⚠️ CAMBIO AQUÍ: Inyección explícita
+    @inject(TYPES.AzureAPI) api: AzureAPI
+  ) {
     this._api = api;
   }
 

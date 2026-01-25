@@ -1,5 +1,3 @@
-// src/presentation/viewmodels/personas/PersonasVM.ts
-
 import { injectable, inject } from 'inversify';
 import { makeObservable, observable, action, computed } from 'mobx';
 import 'reflect-metadata';
@@ -18,10 +16,11 @@ export class PersonasVM {
 
   private readonly _personaUseCase: IPersonaUseCase;
 
-  static inject =[TYPES.ICrearPersonaUseCase];
-  constructor( personaUseCase: IPersonaUseCase) {
+  constructor(
+    // ⚠️ CORRECCIÓN: Usar TYPES.IPersonaUseCase para coincidir con el Container
+    @inject(TYPES.IPersonaUseCase) personaUseCase: IPersonaUseCase
+  ) {
     this._personaUseCase = personaUseCase;
-    
     makeObservable(this);
   }
 

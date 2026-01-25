@@ -17,9 +17,7 @@ export class EditarInsertarDepartamentoVM {
 
   private readonly _departamentoUseCase: IDepartamentoUseCase;
 
-  static injectable=[TYPES.IDepartamentoUseCase];
-
-  constructor( departamentoUseCase: IDepartamentoUseCase) {
+  constructor(@inject(TYPES.IDepartamentoUseCase) departamentoUseCase: IDepartamentoUseCase) {
     this._departamentoUseCase = departamentoUseCase;
     makeObservable(this);
   }

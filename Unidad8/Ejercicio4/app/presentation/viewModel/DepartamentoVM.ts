@@ -3,28 +3,30 @@
 import { injectable, inject } from 'inversify';
 import { makeObservable, observable, action, computed } from 'mobx';
 import 'reflect-metadata';
-import { IDepartamentoUseCase } from '../../../domain/interfaces/usecases/departamentos/IDepartamentoUseCase';
-import { DepartamentoViewModel } from '../../models/DepartamentoViewModel';
-import { Departamento } from '../../../domain/entities/Departamento';
-import { TYPES } from '../../../core/types';
+import { IDepartamentoUseCase } from '../../domain/interfaces/UseCase/IDepartamentoUseCase';
+import { DepartamentoModel } from '../model/DepartamentoModel';
+import { Departamento } from '../../domain/entities/Departamento';
+import { TYPES } from '../../core/types';
 
 @injectable()
 export class DepartamentosVM {
-  @observable private _departamentos: DepartamentoViewModel[] = [];
-  @observable private _departamentoSeleccionado: DepartamentoViewModel | null = null;
+  @observable private _departamentos: DepartamentoModel[] = [];
+  @observable private _departamentoSeleccionado: DepartamentoModel | null = null;
   @observable private _isLoading: boolean = false;
   @observable private _error: string | null = null;
   @observable private _filtro: string = '';
 
   private readonly _departamentoUseCase: IDepartamentoUseCase;
 
+
+  
   constructor(@inject(TYPES.IDepartamentoUseCase) departamentoUseCase: IDepartamentoUseCase) {
     this._departamentoUseCase = departamentoUseCase;
     makeObservable(this);
   }
 
   @computed
-  public get departamentos(): DepartamentoViewModel[] {
+  public get departamentos(): DepartamentoModel[] {
     if (!this._filtro) {
       return this._departamentos;
     }
@@ -36,7 +38,7 @@ export class DepartamentosVM {
   }
 
   @computed
-  public get departamentoSeleccionado(): DepartamentoViewModel | null {
+  public get departamentoSeleccionado(): DepartamentoModel | null {
     return this._departamentoSeleccionado;
   }
 
@@ -61,7 +63,7 @@ export class DepartamentosVM {
   }
 
   @action
-  public setDepartamentoSeleccionado(departamento: DepartamentoViewModel | null): void {
+  public setDepartamentoSeleccionado(departamento: DepartamentoModel | null): void {
     this._departamentoSeleccionado = departamento;
   }
 
@@ -98,8 +100,8 @@ export class DepartamentosVM {
     }
   }
 
-  private entityToViewModel(departamento: Departamento): DepartamentoViewModel {
-    return new DepartamentoViewModel(
+  private entityToViewModel(departamento: Departamento): DepartamentoModel {
+    return new DepartamentoModel(
       departamento.id,
       departamento.nombre
     );

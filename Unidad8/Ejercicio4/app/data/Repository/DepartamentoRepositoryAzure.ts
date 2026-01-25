@@ -1,5 +1,3 @@
-// src/data/repositories/DepartamentoRepositoryAzure.ts
-
 import { injectable, inject } from 'inversify';
 import 'reflect-metadata';
 import { IDepartamentoRepository } from '../../domain/interfaces/Repository/IDepartamentoRepository';
@@ -12,10 +10,12 @@ import { TYPES } from '../../core/types';
 export class DepartamentoRepositoryAzure implements IDepartamentoRepository {
   private readonly _api: AzureAPI;
 
-  static inject = [TYPES.AzureAPI];
-
-
-  constructor(api: AzureAPI) {
+  // ⚠️ CAMBIO: Eliminado static inject
+  
+  constructor(
+    // ⚠️ CAMBIO: Inyección explícita aquí
+    @inject(TYPES.AzureAPI) api: AzureAPI
+  ) {
     this._api = api;
   }
 

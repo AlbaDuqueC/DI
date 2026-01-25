@@ -1,5 +1,3 @@
-// src/domain/usecases/DepartamentoUseCase.ts
-
 import { injectable, inject } from 'inversify';
 import 'reflect-metadata';
 import { IDepartamentoUseCase } from '../interfaces/UseCase/IDepartamentoUseCase';
@@ -11,9 +9,12 @@ import { TYPES } from '../../core/types';
 export class DepartamentoUseCase implements IDepartamentoUseCase {
   private readonly _repository: IDepartamentoRepository;
 
-  static inject = [TYPES.IDepartamentoRepository];
+  // ⚠️ CAMBIO: Eliminado static inject
   
-  constructor( repository: IDepartamentoRepository) {
+  constructor(
+    // ⚠️ CAMBIO: Inyección explícita aquí
+    @inject(TYPES.IDepartamentoRepository) repository: IDepartamentoRepository
+  ) {
     this._repository = repository;
   }
 
