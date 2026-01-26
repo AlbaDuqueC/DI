@@ -17,7 +17,7 @@ export class PersonasVM {
   private readonly _personaUseCase: IPersonaUseCase;
 
   constructor(
-    // ⚠️ CORRECCIÓN: Usar TYPES.IPersonaUseCase para coincidir con el Container
+
     @inject(TYPES.IPersonaUseCase) personaUseCase: IPersonaUseCase
   ) {
     this._personaUseCase = personaUseCase;

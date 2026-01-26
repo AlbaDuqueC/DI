@@ -1,5 +1,5 @@
 // src/presentation/screens/BienvenidaScreen.tsx
-import "reflect-metadata";
+
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -16,7 +16,7 @@ const Index: React.FC = () => {
 
 <TouchableOpacity
   style={styles.button}
-  // ⚠️ CAMBIO: Usamos el nombre del archivo 'ListadoPersonas'
+
   onPress={() => navigation.navigate('ListadoPersonas' as never)}
 >
   <Text style={styles.buttonText}>Ver Personas</Text>
@@ -24,7 +24,7 @@ const Index: React.FC = () => {
 
       <TouchableOpacity
         style={styles.button}
-        // ⚠️ CAMBIO: Usamos el nombre del archivo 'ListadoDepartamento'
+
         onPress={() => navigation.navigate('ListadoDepartamento' as never)}
       >
         <Text style={styles.buttonText}>Ver Departamentos</Text>
