@@ -1,4 +1,4 @@
-// src/presentation/viewmodels/departamentos/DepartamentosVM.ts
+// app/presentation/viewModel/DepartamentoVM.ts
 
 import { injectable, inject } from 'inversify';
 import { makeObservable, observable, action, computed } from 'mobx';

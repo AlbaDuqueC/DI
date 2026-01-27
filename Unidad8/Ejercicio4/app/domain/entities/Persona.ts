@@ -1,5 +1,6 @@
+// app/domain/entities/Persona.ts
+
 export class Persona {
-  [x: string]: any;
   private _id: number;
   private _nombre: string;
   private _apellidos: string;
@@ -52,5 +53,15 @@ export class Persona {
   getNombreCompleto(): string {
     return `${this._nombre} ${this._apellidos}`;
   }
-}
 
+  // ✅ CAMBIO: Retornar number en lugar de string
+  getEdad(): number {
+    const hoy = new Date();
+    let edad = hoy.getFullYear() - this._fechaNacimiento.getFullYear();
+    const mes = hoy.getMonth() - this._fechaNacimiento.getMonth();
+    if (mes < 0 || (mes === 0 && hoy.getDate() < this._fechaNacimiento.getDate())) {
+      edad--;
+    }
+    return edad;
+  }
+}

@@ -10,20 +10,30 @@ export default function Layout() {
         headerTitleStyle: { fontWeight: "bold" },
       }}
     >
-      <Stack.Screen name="index" options={{ title: "Inicio", headerShown: false }} />
-
-      {/* ⚠️ CAMBIO: Los 'name' deben coincidir con los NOMBRES DE ARCHIVO en app/ */}
       <Stack.Screen 
-        name="ListadoPersonas" 
+        name="index" 
+        options={{ title: "Inicio", headerShown: false }} 
+      />
+      
+      <Stack.Screen 
+        name="presentation/view/Persona/ListadoPersonas" 
         options={{ title: "Personas" }} 
       />
       
       <Stack.Screen 
-        name="ListadoDepartamento" 
+        name="presentation/view/Departamento/ListadoDepartamento" 
         options={{ title: "Departamentos" }} 
       />
       
-      {/* Resto de pantallas... */}
+      <Stack.Screen 
+        name="presentation/view/Persona/EditarInsertarPersonas" 
+        options={{ title: "Editar/Insertar Persona" }} 
+      />
+      
+      <Stack.Screen 
+        name="presentation/view/Departamento/EditarInsertarDepartamentos" 
+        options={{ title: "Editar/Insertar Departamento" }} 
+      />
     </Stack>
   );
 }

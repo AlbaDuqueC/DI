@@ -1,4 +1,4 @@
-// src/presentation/models/PersonaViewModel.ts
+// app/presentation/model/PersonaModel.ts
 
 export class PersonaModel {
   public id: number;

@@ -1,4 +1,4 @@
-// src/presentation/models/DepartamentoViewModel.ts
+// app/presentation/model/DepartamentoModel.ts
 
 export class DepartamentoModel {
   public id: number;

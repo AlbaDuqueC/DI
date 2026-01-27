@@ -1,4 +1,4 @@
-// src/core/container.ts
+// app/core/Container.ts
 
 import { Container } from 'inversify';
 import 'reflect-metadata';
@@ -40,7 +40,7 @@ container.bind<IDepartamentoUseCase>(TYPES.IDepartamentoUseCase).to(Departamento
 // Bind ViewModels
 container.bind<PersonasVM>(TYPES.PersonasVM).to(PersonasVM).inSingletonScope();
 container.bind<DepartamentosVM>(TYPES.DepartamentosVM).to(DepartamentosVM).inSingletonScope();
-container.bind<EditarInsertarPersonaVM>(TYPES.EditarInsertarPersonaVM).to(EditarInsertarPersonaVM);
-container.bind<EditarInsertarDepartamentoVM>(TYPES.EditarInsertarDepartamentoVM).to(EditarInsertarDepartamentoVM);
+container.bind<EditarInsertarPersonaVM>(TYPES.EditarInsertarPersonaVM).to(EditarInsertarPersonaVM).inTransientScope();
+container.bind<EditarInsertarDepartamentoVM>(TYPES.EditarInsertarDepartamentoVM).to(EditarInsertarDepartamentoVM).inTransientScope();
 
 export { container };

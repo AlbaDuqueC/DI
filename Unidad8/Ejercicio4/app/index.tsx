@@ -1,11 +1,10 @@
-// src/presentation/screens/BienvenidaScreen.tsx
 import "reflect-metadata";
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 const Index: React.FC = () => {
-  const navigation = useNavigation();
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
@@ -13,22 +12,19 @@ const Index: React.FC = () => {
       <Text style={styles.subtitle}>Sistema de Gestión de Personas y Departamentos</Text>
       
       <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push('/presentation/view/Persona/ListadoPersonas')}
+        >
+          <Text style={styles.buttonText}>Ver Personas</Text>
+        </TouchableOpacity>
 
-<TouchableOpacity
-  style={styles.button}
-  // ⚠️ CAMBIO: Usamos el nombre del archivo 'ListadoPersonas'
-  onPress={() => navigation.navigate('ListadoPersonas' as never)}
->
-  <Text style={styles.buttonText}>Ver Personas</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        // ⚠️ CAMBIO: Usamos el nombre del archivo 'ListadoDepartamento'
-        onPress={() => navigation.navigate('ListadoDepartamento' as never)}
-      >
-        <Text style={styles.buttonText}>Ver Departamentos</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push('/presentation/view/Departamento/ListadoDepartamento')}
+        >
+          <Text style={styles.buttonText}>Ver Departamentos</Text>
+        </TouchableOpacity>
       </View>
       
       <View style={styles.infoContainer}>

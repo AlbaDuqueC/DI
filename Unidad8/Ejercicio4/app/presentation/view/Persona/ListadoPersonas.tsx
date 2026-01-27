@@ -1,20 +1,31 @@
-// src/presentation/screens/personas/ListadoPersonasScreen.tsx
+// app/presentation/view/Persona/ListadoPersonas.tsx
 
 import React, { useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import { container } from '../../../core/Container';
 import { TYPES } from '../../../core/types';
 import { PersonasVM } from '../../viewModel/PersonaVM';
 
 const ListadoPersonasScreen: React.FC = observer(() => {
-  const navigation = useNavigation();
-  const viewModel = container.get<PersonasVM>(TYPES.PersonaModel);
+  const router = useRouter();
+  const viewModel = container.get<PersonasVM>(TYPES.PersonasVM);
 
   useEffect(() => {
+    console.log('🔄 ListadoPersonas: Iniciando carga de personas...');
     viewModel.cargarPersonas();
   }, []);
+
+  // ✅ Log para verificar el estado del viewModel
+  useEffect(() => {
+    console.log('📊 Estado del ViewModel:', {
+      isLoading: viewModel.isLoading,
+      error: viewModel.error,
+      personasCount: viewModel.personas.length,
+      personas: viewModel.personas
+    });
+  }, [viewModel.isLoading, viewModel.error, viewModel.personas.length]);
 
   const handleEliminar = (id: number, nombre: string) => {
     Alert.alert(
@@ -40,10 +51,10 @@ const ListadoPersonasScreen: React.FC = observer(() => {
 
   const handleEditar = (persona: any) => {
     viewModel.setPersonaSeleccionada(persona);
-    (navigation as any).navigate('EditarPersona', { 
-      personaId: persona.id 
+    router.push({
+      pathname: '/presentation/view/Persona/EditarInsertarPersonas',
+      params: { personaId: persona.id.toString() }
     });
-    
   };
 
   if (viewModel.isLoading && viewModel.personas.length === 0) {
@@ -74,45 +85,77 @@ const ListadoPersonasScreen: React.FC = observer(() => {
 
       <FlatList
         data={viewModel.personas}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <View style={styles.cardHeader}>
-              <Text style={styles.nombre}>{item.nombreCompleto}</Text>
-              <Text style={styles.edad}>{item.edad} años</Text>
-            </View>
-            
-            <Text style={styles.detalle}>📞 {item.telefono}</Text>
-            <Text style={styles.detalle}>📍 {item.direccion}</Text>
-            <Text style={styles.detalle}>🎂 {item.fechaNacimiento}</Text>
-            
-            <View style={styles.buttonRow}>
-              <TouchableOpacity
-                style={[styles.button, styles.editButton]}
-                onPress={() => handleEditar(item)}
-              >
-                <Text style={styles.buttonText}>Editar</Text>
-              </TouchableOpacity>
+        keyExtractor={(item, index) => {
+          // ✅ Validación defensiva mejorada
+          if (!item) {
+            console.error('❌ Item undefined en posición:', index);
+            return `error-${index}`;
+          }
+          if (item.id === undefined || item.id === null) {
+            console.error('❌ Item sin ID válido:', item, 'en posición:', index);
+            return `no-id-${index}`;
+          }
+          return item.id.toString();
+        }}
+        renderItem={({ item, index }) => {
+          // ✅ Validación defensiva
+          if (!item) {
+            console.error('❌ Intentando renderizar item undefined en posición:', index);
+            return null;
+          }
+
+          if (!item.id) {
+            console.error('❌ Item sin ID:', item);
+            return null;
+          }
+
+          console.log('✅ Renderizando persona:', {
+            id: item.id,
+            nombre: item.nombreCompleto,
+            edad: item.edad
+          });
+
+          return (
+            <View style={styles.card}>
+              <View style={styles.cardHeader}>
+                <Text style={styles.nombre}>{item.nombreCompleto || 'Sin nombre'}</Text>
+                <Text style={styles.edad}>{item.edad || '?'} años</Text>
+              </View>
               
-              <TouchableOpacity
-                style={[styles.button, styles.deleteButton]}
-                onPress={() => handleEliminar(item.id, item.nombreCompleto)}
-              >
-                <Text style={styles.buttonText}>Eliminar</Text>
-              </TouchableOpacity>
+              <Text style={styles.detalle}>📞 {item.telefono || 'Sin teléfono'}</Text>
+              <Text style={styles.detalle}>📍 {item.direccion || 'Sin dirección'}</Text>
+              <Text style={styles.detalle}>🎂 {item.fechaNacimiento || 'Sin fecha'}</Text>
+              
+              <View style={styles.buttonRow}>
+                <TouchableOpacity
+                  style={[styles.button, styles.editButton]}
+                  onPress={() => handleEditar(item)}
+                >
+                  <Text style={styles.buttonText}>Editar</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                  style={[styles.button, styles.deleteButton]}
+                  onPress={() => handleEliminar(item.id, item.nombreCompleto)}
+                >
+                  <Text style={styles.buttonText}>Eliminar</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        )}
+          );
+        }}
         ListEmptyComponent={() => (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No hay personas registradas</Text>
+            <Text style={styles.emptyText}>
+              {viewModel.isLoading ? 'Cargando...' : 'No hay personas registradas'}
+            </Text>
           </View>
         )}
       />
 
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => navigation.navigate('NuevaPersona' as never)}
+        onPress={() => router.push('/presentation/view/Persona/EditarInsertarPersonas')}
       >
         <Text style={styles.fabText}>+</Text>
       </TouchableOpacity>

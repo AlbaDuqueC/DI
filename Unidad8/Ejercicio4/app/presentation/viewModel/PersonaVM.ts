@@ -1,3 +1,5 @@
+// app/presentation/viewModel/PersonaVM.ts
+
 import { injectable, inject } from 'inversify';
 import { makeObservable, observable, action, computed } from 'mobx';
 import 'reflect-metadata';

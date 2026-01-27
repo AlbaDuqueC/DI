@@ -1,18 +1,15 @@
-// src/presentation/screens/personas/EditarInsertarPersonaScreen.tsx
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter, useLocalSearchParams } from 'expo-router'; // ✅ Cambios aquí
 import { observer } from 'mobx-react-lite';
 import { container } from '../../../core/Container';
 import { TYPES } from '../../../core/types';
-import { EditarInsertarPersonaVM } from '../../viewModel/EditarInsertarPersona';
+import { EditarInsertarPersonaVM } from '..//../viewModel/EditarInsertarPersona';
 import { DepartamentosVM } from '../../viewModel/DepartamentoVM';
 
 const EditarInsertarPersonaScreen: React.FC = observer(() => {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const params = route.params as { personaId?: number } | undefined;
+  const router = useRouter(); // ✅ Cambio aquí
+  const params = useLocalSearchParams(); // ✅ Cambio aquí
   
   const [viewModel] = useState(() => container.get<EditarInsertarPersonaVM>(TYPES.EditarInsertarPersonaVM));
   const departamentosVM = container.get<DepartamentosVM>(TYPES.DepartamentosVM);
@@ -21,7 +18,7 @@ const EditarInsertarPersonaScreen: React.FC = observer(() => {
     departamentosVM.cargarDepartamentos();
     
     if (params?.personaId) {
-      viewModel.cargarPersona(params.personaId);
+      viewModel.cargarPersona(Number(params.personaId));
     } else {
       viewModel.limpiarFormulario();
     }
@@ -40,7 +37,7 @@ const EditarInsertarPersonaScreen: React.FC = observer(() => {
         [
           {
             text: 'OK',
-            onPress: () => navigation.goBack(),
+            onPress: () => router.back(), // ✅ Cambio aquí
           },
         ]
       );
@@ -144,7 +141,7 @@ const EditarInsertarPersonaScreen: React.FC = observer(() => {
 
           <TouchableOpacity
             style={[styles.button, styles.cancelButton]}
-            onPress={() => navigation.goBack()}
+            onPress={() => router.back()} // ✅ Cambio aquí
           >
             <Text style={styles.buttonText}>Cancelar</Text>
           </TouchableOpacity>
@@ -153,6 +150,7 @@ const EditarInsertarPersonaScreen: React.FC = observer(() => {
     </ScrollView>
   );
 });
+
 
 const styles = StyleSheet.create({
   container: {

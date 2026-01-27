@@ -1,4 +1,4 @@
-// src/presentation/viewmodels/personas/EditarInsertarPersonaVM.ts
+// app/presentation/viewModel/EditarInsertarPersona.ts
 
 import { injectable, inject } from 'inversify';
 import { makeObservable, observable, action, computed } from 'mobx';

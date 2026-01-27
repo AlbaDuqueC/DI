@@ -1,3 +1,5 @@
+// app/core/types.ts
+
 export const TYPES = {
   // Datasources
   AzureAPI: 'AzureAPI',
@@ -16,12 +18,11 @@ export const TYPES = {
   IDepartamentoUseCase: 'IDepartamentoUseCase',
   IPersonaUseCase: 'IPersonaUseCase',
 
-
   // ViewModels
   PersonasVM: 'PersonasVM',
   DepartamentosVM: 'DepartamentosVM',
-  EditarInsertarPersonaVM: 'EditarInsertarPersonaVM', // <-- Añade esta línea
+  EditarInsertarPersonaVM: 'EditarInsertarPersonaVM',
   EditarInsertarDepartamentoVM: 'EditarInsertarDepartamentoVM',
-
-  PersonaModel: 'PersonaModel',
+  
+  
 } as const;

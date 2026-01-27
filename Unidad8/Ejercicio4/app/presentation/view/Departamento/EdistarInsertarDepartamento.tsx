@@ -1,23 +1,20 @@
-// src/presentation/screens/departamentos/EditarInsertarDepartamentoScreen.tsx
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter, useLocalSearchParams } from 'expo-router'; // ✅ Cambios aquí
 import { observer } from 'mobx-react-lite';
 import { container } from '../../../core/Container';
 import { TYPES } from '../../../core/types';
 import { EditarInsertarDepartamentoVM } from '../../viewModel/EditarInsertarDepartamento';
 
 const EditarInsertarDepartamentoScreen: React.FC = observer(() => {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const params = route.params as { departamentoId?: number } | undefined;
+  const router = useRouter(); // ✅ Cambio aquí
+  const params = useLocalSearchParams(); // ✅ Cambio aquí
   
   const [viewModel] = useState(() => container.get<EditarInsertarDepartamentoVM>(TYPES.EditarInsertarDepartamentoVM));
 
   useEffect(() => {
     if (params?.departamentoId) {
-      viewModel.cargarDepartamento(params.departamentoId);
+      viewModel.cargarDepartamento(Number(params.departamentoId));
     } else {
       viewModel.limpiarFormulario();
     }
@@ -36,7 +33,7 @@ const EditarInsertarDepartamentoScreen: React.FC = observer(() => {
         [
           {
             text: 'OK',
-            onPress: () => navigation.goBack(),
+            onPress: () => router.back(), // ✅ Cambio aquí
           },
         ]
       );
@@ -96,7 +93,7 @@ const EditarInsertarDepartamentoScreen: React.FC = observer(() => {
 
           <TouchableOpacity
             style={[styles.button, styles.cancelButton]}
-            onPress={() => navigation.goBack()}
+            onPress={() => router.back()} // ✅ Cambio aquí
           >
             <Text style={styles.buttonText}>❌ Cancelar</Text>
           </TouchableOpacity>
@@ -105,6 +102,7 @@ const EditarInsertarDepartamentoScreen: React.FC = observer(() => {
     </ScrollView>
   );
 });
+
 
 const styles = StyleSheet.create({
   container: {

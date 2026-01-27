@@ -1,4 +1,4 @@
-// src/presentation/screens/departamentos/ListadoDepartamentosScreen.tsx
+// src/presentation/screens/departamentos/ListadoDepartamentos.tsx
 
 import React, { useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, ActivityIndicator, Alert } from 'react-native';
