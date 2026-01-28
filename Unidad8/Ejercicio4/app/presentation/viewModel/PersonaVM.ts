@@ -1,7 +1,7 @@
 // app/presentation/viewModel/PersonaVM.ts
 
 import { injectable, inject } from 'inversify';
-import { makeObservable, observable, action, computed } from 'mobx';
+import { makeObservable, observable, action, computed, runInAction } from 'mobx';
 import 'reflect-metadata';
 import { IPersonaUseCase } from '../../domain/interfaces/UseCase/IPersonaUseCase';
 import { PersonaModel } from '../model/PersonaModel';
@@ -18,10 +18,7 @@ export class PersonasVM {
 
   private readonly _personaUseCase: IPersonaUseCase;
 
-  constructor(
-    // ⚠️ CORRECCIÓN: Usar TYPES.IPersonaUseCase para coincidir con el Container
-    @inject(TYPES.IPersonaUseCase) personaUseCase: IPersonaUseCase
-  ) {
+  constructor(@inject(TYPES.IPersonaUseCase) personaUseCase: IPersonaUseCase) {
     this._personaUseCase = personaUseCase;
     makeObservable(this);
   }
@@ -76,13 +73,22 @@ export class PersonasVM {
     this._error = null;
     
     try {
+      console.log('🔄 ViewModel: Cargando personas...');
       const personas = await this._personaUseCase.getPersonas();
-      this._personas = personas.map(p => this.entityToViewModel(p));
+      console.log('✅ ViewModel: Personas obtenidas:', personas.length);
+      
+      // ✅ Usar runInAction después del await
+      runInAction(() => {
+        this._personas = personas.map(p => this.entityToViewModel(p));
+        console.log('✅ ViewModel: Personas mapeadas:', this._personas.length);
+        this._isLoading = false;
+      });
     } catch (error) {
-      this._error = error instanceof Error ? error.message : 'Error al cargar personas';
-      console.error('Error al cargar personas:', error);
-    } finally {
-      this._isLoading = false;
+      runInAction(() => {
+        this._error = error instanceof Error ? error.message : 'Error al cargar personas';
+        this._isLoading = false;
+      });
+      console.error('❌ ViewModel: Error al cargar personas:', error);
     }
   }
 
@@ -93,17 +99,24 @@ export class PersonasVM {
     
     try {
       await this._personaUseCase.eliminarPersona(id);
-      await this.cargarPersonas(); // Recargar la lista
+      await this.cargarPersonas();
     } catch (error) {
-      this._error = error instanceof Error ? error.message : 'Error al eliminar persona';
+      runInAction(() => {
+        this._error = error instanceof Error ? error.message : 'Error al eliminar persona';
+        this._isLoading = false;
+      });
       console.error('Error al eliminar persona:', error);
       throw error;
-    } finally {
-      this._isLoading = false;
     }
   }
 
   private entityToViewModel(persona: Persona): PersonaModel {
+    console.log('🔄 Mapeando persona:', {
+      id: persona.id,
+      nombre: persona.nombre,
+      apellidos: persona.apellidos
+    });
+
     return new PersonaModel(
       persona.id,
       persona.nombre,

@@ -36,11 +36,23 @@ export class AzureAPI {
         throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
       }
 
-      const data = await response.json();
-      console.log(`✅ GET Success:`, endpoint, '- Datos recibidos:', Array.isArray(data) ? `${data.length} items` : 'objeto');
-      console.log('📦 Datos completos:', data);
+      // ✅ Verificar el Content-Type de la respuesta
+      const contentType = response.headers.get('content-type');
+      console.log(`📋 Content-Type: ${contentType}`);
       
-      return data;
+      // ✅ Intentar parsear como JSON, si falla devolver como texto
+      const text = await response.text();
+      console.log(`📦 Response Text (primeros 500 chars):`, text.substring(0, 500));
+      
+      try {
+        const data = JSON.parse(text);
+        console.log(`✅ GET Success (JSON):`, endpoint, '- Datos recibidos:', Array.isArray(data) ? `${data.length} items` : 'objeto');
+        return data;
+      } catch (parseError) {
+        console.warn(`⚠️ No se pudo parsear como JSON, devolviendo texto plano`);
+        // Si no es JSON válido, devolver el texto como está
+        return text as unknown as T;
+      }
     } catch (error) {
       console.error(`❌ Error en GET ${endpoint}:`, error);
       throw error;
@@ -69,10 +81,21 @@ export class AzureAPI {
         throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
       }
 
-      const result = await response.json();
-      console.log(`✅ POST Success:`, result);
+      const text = await response.text();
       
-      return result;
+      // Si la respuesta está vacía (204 No Content), devolver objeto vacío
+      if (!text || text.trim() === '') {
+        return {} as T;
+      }
+      
+      try {
+        const result = JSON.parse(text);
+        console.log(`✅ POST Success:`, result);
+        return result;
+      } catch (parseError) {
+        console.warn(`⚠️ POST response no es JSON, devolviendo texto:`, text);
+        return text as unknown as T;
+      }
     } catch (error) {
       console.error(`❌ Error en POST ${endpoint}:`, error);
       throw error;
@@ -101,10 +124,21 @@ export class AzureAPI {
         throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
       }
 
-      const result = await response.json();
-      console.log(`✅ PUT Success:`, result);
+      const text = await response.text();
       
-      return result;
+      // Si la respuesta está vacía (204 No Content), devolver undefined
+      if (!text || text.trim() === '') {
+        return undefined as T;
+      }
+      
+      try {
+        const result = JSON.parse(text);
+        console.log(`✅ PUT Success:`, result);
+        return result;
+      } catch (parseError) {
+        console.warn(`⚠️ PUT response no es JSON, devolviendo texto:`, text);
+        return text as unknown as T;
+      }
     } catch (error) {
       console.error(`❌ Error en PUT ${endpoint}:`, error);
       throw error;
@@ -131,10 +165,21 @@ export class AzureAPI {
         throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
       }
 
-      const result = await response.json();
-      console.log(`✅ DELETE Success:`, result);
+      const text = await response.text();
       
-      return result;
+      // Si la respuesta está vacía, devolver undefined
+      if (!text || text.trim() === '') {
+        return undefined as T;
+      }
+      
+      try {
+        const result = JSON.parse(text);
+        console.log(`✅ DELETE Success:`, result);
+        return result;
+      } catch (parseError) {
+        console.warn(`⚠️ DELETE response no es JSON`);
+        return undefined as T;
+      }
     } catch (error) {
       console.error(`❌ Error en DELETE ${endpoint}:`, error);
       throw error;

@@ -1,18 +1,23 @@
+// app/presentation/view/Persona/EditarInsertarPersonas.tsx
+
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router'; // ✅ Cambios aquí
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIndicator, Platform } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import { container } from '../../../core/Container';
 import { TYPES } from '../../../core/types';
-import { EditarInsertarPersonaVM } from '..//../viewModel/EditarInsertarPersona';
+import { EditarInsertarPersonaVM } from '../../viewModel/EditarInsertarPersona';
 import { DepartamentosVM } from '../../viewModel/DepartamentoVM';
 
 const EditarInsertarPersonaScreen: React.FC = observer(() => {
-  const router = useRouter(); // ✅ Cambio aquí
-  const params = useLocalSearchParams(); // ✅ Cambio aquí
+  const router = useRouter();
+  const params = useLocalSearchParams();
   
   const [viewModel] = useState(() => container.get<EditarInsertarPersonaVM>(TYPES.EditarInsertarPersonaVM));
   const departamentosVM = container.get<DepartamentosVM>(TYPES.DepartamentosVM);
+
+  // Estado local para el input de fecha (formato DD/MM/YYYY)
+  const [fechaTexto, setFechaTexto] = useState('');
 
   useEffect(() => {
     departamentosVM.cargarDepartamentos();
@@ -28,6 +33,36 @@ const EditarInsertarPersonaScreen: React.FC = observer(() => {
     };
   }, [params?.personaId]);
 
+  // Sincronizar la fecha del viewModel con el input de texto
+  useEffect(() => {
+    const fecha = viewModel.fechaNacimiento;
+    const dia = fecha.getDate().toString().padStart(2, '0');
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+    const anio = fecha.getFullYear();
+    setFechaTexto(`${dia}/${mes}/${anio}`);
+  }, [viewModel.fechaNacimiento]);
+
+  const handleFechaChange = (texto: string) => {
+    setFechaTexto(texto);
+    
+    // Intentar parsear la fecha cuando tenga formato completo
+    if (texto.length === 10) {
+      const partes = texto.split('/');
+      if (partes.length === 3) {
+        const dia = parseInt(partes[0]);
+        const mes = parseInt(partes[1]) - 1; // Los meses en JS van de 0-11
+        const anio = parseInt(partes[2]);
+        
+        if (!isNaN(dia) && !isNaN(mes) && !isNaN(anio)) {
+          const fecha = new Date(anio, mes, dia);
+          if (!isNaN(fecha.getTime())) {
+            viewModel.setFechaNacimiento(fecha);
+          }
+        }
+      }
+    }
+  };
+
   const handleGuardar = async () => {
     try {
       await viewModel.guardarPersona();
@@ -37,7 +72,7 @@ const EditarInsertarPersonaScreen: React.FC = observer(() => {
         [
           {
             text: 'OK',
-            onPress: () => router.back(), // ✅ Cambio aquí
+            onPress: () => router.back(),
           },
         ]
       );
@@ -72,6 +107,17 @@ const EditarInsertarPersonaScreen: React.FC = observer(() => {
           onChangeText={(text) => viewModel.setApellidos(text)}
           placeholder="Ingrese los apellidos"
         />
+
+        <Text style={styles.label}>Fecha de Nacimiento *</Text>
+        <TextInput
+          style={styles.input}
+          value={fechaTexto}
+          onChangeText={handleFechaChange}
+          placeholder="DD/MM/YYYY"
+          keyboardType="numeric"
+          maxLength={10}
+        />
+        <Text style={styles.helperText}>Formato: DD/MM/YYYY (Ejemplo: 15/05/1990)</Text>
 
         <Text style={styles.label}>Teléfono</Text>
         <TextInput
@@ -141,7 +187,7 @@ const EditarInsertarPersonaScreen: React.FC = observer(() => {
 
           <TouchableOpacity
             style={[styles.button, styles.cancelButton]}
-            onPress={() => router.back()} // ✅ Cambio aquí
+            onPress={() => router.back()}
           >
             <Text style={styles.buttonText}>Cancelar</Text>
           </TouchableOpacity>
@@ -150,7 +196,6 @@ const EditarInsertarPersonaScreen: React.FC = observer(() => {
     </ScrollView>
   );
 });
-
 
 const styles = StyleSheet.create({
   container: {
@@ -171,6 +216,12 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 5,
     marginTop: 10,
+  },
+  helperText: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 5,
+    fontStyle: 'italic',
   },
   input: {
     backgroundColor: '#fff',

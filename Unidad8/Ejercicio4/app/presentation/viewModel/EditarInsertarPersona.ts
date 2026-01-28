@@ -1,7 +1,7 @@
 // app/presentation/viewModel/EditarInsertarPersona.ts
 
 import { injectable, inject } from 'inversify';
-import { makeObservable, observable, action, computed } from 'mobx';
+import { makeObservable, observable, action, computed, runInAction } from 'mobx';
 import 'reflect-metadata';
 import { IPersonaUseCase } from '../../domain/interfaces/UseCase/IPersonaUseCase';
 import { Persona } from '../../domain/entities/Persona';
@@ -23,8 +23,7 @@ export class EditarInsertarPersonaVM {
 
   private readonly _personaUseCase: IPersonaUseCase;
 
-
-  constructor( @inject(TYPES.IPersonaUseCase) personaUseCase: IPersonaUseCase) {
+  constructor(@inject(TYPES.IPersonaUseCase) personaUseCase: IPersonaUseCase) {
     this._personaUseCase = personaUseCase;
     makeObservable(this);
   }
@@ -59,19 +58,25 @@ export class EditarInsertarPersonaVM {
     
     try {
       const persona = await this._personaUseCase.getPersonaById(id);
-      this._id = persona.id;
-      this._nombre = persona.nombre;
-      this._apellidos = persona.apellidos;
-      this._foto = persona.foto;
-      this._fechaNacimiento = persona.fechaNacimiento;
-      this._direccion = persona.direccion;
-      this._telefono = persona.telefono;
-      this._idDepartamento = persona.idDepartamento;
+      
+      // ✅ Usar runInAction para cambios después de await
+      runInAction(() => {
+        this._id = persona.id;
+        this._nombre = persona.nombre;
+        this._apellidos = persona.apellidos;
+        this._foto = persona.foto;
+        this._fechaNacimiento = persona.fechaNacimiento;
+        this._direccion = persona.direccion;
+        this._telefono = persona.telefono;
+        this._idDepartamento = persona.idDepartamento;
+        this._isLoading = false;
+      });
     } catch (error) {
-      this._error = error instanceof Error ? error.message : 'Error al cargar persona';
+      runInAction(() => {
+        this._error = error instanceof Error ? error.message : 'Error al cargar persona';
+        this._isLoading = false;
+      });
       console.error('Error al cargar persona:', error);
-    } finally {
-      this._isLoading = false;
     }
   }
 
@@ -118,13 +123,18 @@ export class EditarInsertarPersonaVM {
         resultado = await this._personaUseCase.crearPersona(persona);
       }
 
+      runInAction(() => {
+        this._isLoading = false;
+      });
+
       return resultado;
     } catch (error) {
-      this._error = error instanceof Error ? error.message : 'Error al guardar persona';
+      runInAction(() => {
+        this._error = error instanceof Error ? error.message : 'Error al guardar persona';
+        this._isLoading = false;
+      });
       console.error('Error al guardar persona:', error);
       throw error;
-    } finally {
-      this._isLoading = false;
     }
   }
 }
