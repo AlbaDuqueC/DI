@@ -8,6 +8,8 @@ export class AzureAPI {
   private readonly _apiUrl: string;
 
   constructor() {
+
+    //FERNANANDO ME VA MAL LA API, PON LA TUYA :) PERDON <3
     this._apiUrl = 'https://ejercicio3-bve6ckbmchebczg4.spaincentral-01.azurewebsites.net/api';
     console.log('AzureAPI inicializada con URL:', this._apiUrl);
   }

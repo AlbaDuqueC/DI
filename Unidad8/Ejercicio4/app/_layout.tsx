@@ -31,7 +31,7 @@ export default function Layout() {
       />
       
       <Stack.Screen 
-        name="presentation/view/Departamento/EditarInsertarDepartamentos" 
+        name="presentation/view/Departamento/EditarInsertarDepartamento" 
         options={{ title: "Editar/Insertar Departamento" }} 
       />
     </Stack>

@@ -7,6 +7,7 @@ import { observer } from 'mobx-react-lite';
 import { container } from '../../../core/Container';
 import { TYPES } from '../../../core/types';
 import { DepartamentosVM } from '../../viewModel/DepartamentoVM';
+import { router } from 'expo-router';
 
 // Componente funcional envuelto con observer para reactividad de MobX
 const ListadoDepartamentosScreen: React.FC = observer(() => {
@@ -55,9 +56,11 @@ const ListadoDepartamentosScreen: React.FC = observer(() => {
     // Establece el departamento seleccionado en el ViewModel
     viewModel.setDepartamentoSeleccionado(departamento);
     // Convierte navigation a any para evitar errores de TypeScript
-    (navigation as any).navigate('EditarInsertarDepartamento', { 
-      // Pasa el ID como parámetro de navegación
-      departamentoId: departamento.id 
+    
+    // Navega a la pantalla de edición pasando el ID como parámetro
+    router.push({
+      pathname: '/presentation/view/Departamento/EditarInsertarDepartamento',
+      params: { personaId: departamento.id.toString() }
     });
   };
 

@@ -1,4 +1,5 @@
 // app/data/Repository/PersonaRepositoryAzure.ts
+// SOLUCIÓN DEFINITIVA: Usar nombres de propiedades como los espera la API C#
 
 import { injectable, inject } from 'inversify';
 import 'reflect-metadata';
@@ -20,25 +21,23 @@ export class PersonaRepositoryAzure implements IPersonaRepository {
   private dtoToEntity(dto: any): Persona {
     console.log('DTO recibido RAW:', JSON.stringify(dto, null, 2));
     
-    // Extraer el objeto persona si viene anidado
+    // La API puede devolver datos anidados o directos
     const personaData = dto.persona || dto;
     
-    console.log('Datos de persona extraídos:', personaData);
-    
-    const id = personaData.id || personaData.ID || personaData.Id || 0;
-    const nombre = personaData.nombre || personaData.Nombre || '';
-    const apellidos = personaData.apellidos || personaData.Apellidos || '';
-    const foto = personaData.foto || personaData.Foto || '';
-    const direccion = personaData.direccion || personaData.Direccion || '';
-    const telefono = personaData.telefono || personaData.Telefono || '';
-    const idDepartamento = personaData.idDepartamento || personaData.IDDepartamento || personaData.IdDepartamento || 0;
+    // ✅ IMPORTANTE: La API usa nombres con mayúsculas (ID, Nombre, etc.)
+    const id = personaData.ID || personaData.id || personaData.Id || 0;
+    const nombre = personaData.Nombre || personaData.nombre || '';
+    const apellidos = personaData.Apellidos || personaData.apellidos || '';
+    const foto = personaData.Foto || personaData.foto || '';
+    const direccion = personaData.Direccion || personaData.direccion || '';
+    const telefono = personaData.Telefono || personaData.telefono || '';
+    const idDepartamento = personaData.IdDepartamento || personaData.IDDepartamento || personaData.idDepartamento || 0;
     
     let fechaNacimiento: Date;
-    const fechaDto = personaData.fechaNacimiento || personaData.FechaNacimiento;
+    const fechaDto = personaData.FechaNacimiento || personaData.fechaNacimiento;
     
     if (fechaDto) {
       fechaNacimiento = new Date(fechaDto);
-      // Si la fecha es inválida, usar fecha por defecto
       if (isNaN(fechaNacimiento.getTime())) {
         console.warn('Fecha inválida, usando fecha por defecto:', fechaDto);
         fechaNacimiento = new Date('2000-01-01');
@@ -84,21 +83,22 @@ export class PersonaRepositoryAzure implements IPersonaRepository {
     return persona;
   }
 
-  private entityToDto(persona: Persona): PersonaDTO {
+  private entityToDto(persona: Persona, idPersona?: number): PersonaDTO {
     console.log('Convirtiendo Entidad a DTO:', persona.getNombreCompleto());
     
-    const dto = {
-      id: persona.id,
-      nombre: persona.nombre,
-      apellidos: persona.apellidos,
-      foto: persona.foto,
-      fechaNacimiento: persona.fechaNacimiento.toISOString(),
-      direccion: persona.direccion,
-      telefono: persona.telefono,
-      idDepartamento: persona.idDepartamento
+    // ✅ SOLUCIÓN: Usar nombres con MAYÚSCULAS como los espera la API C#
+    const dto: PersonaDTO = {
+      ID: idPersona !== undefined ? idPersona : persona.id,  // ← ID en mayúsculas
+      Nombre: persona.nombre,  // ← Nombre con N mayúscula
+      Apellidos: persona.apellidos,  // ← Apellidos con A mayúscula
+      Foto: persona.foto,  // ← Foto con F mayúscula
+      FechaNacimiento: persona.fechaNacimiento.toISOString(),  // ← FechaNacimiento
+      Direccion: persona.direccion,  // ← Direccion con D mayúscula
+      Telefono: persona.telefono,  // ← Telefono con T mayúscula
+      IdDepartamento: persona.idDepartamento  // ← IdDepartamento
     };
     
-    console.log('DTO creado:', dto);
+    console.log('DTO creado con nombres C#:', dto);
     return dto;
   }
 
@@ -113,17 +113,15 @@ export class PersonaRepositoryAzure implements IPersonaRepository {
         console.log('Estructura del primer item:', JSON.stringify(dtos[0], null, 2));
       }
       
-      // Procesar cada item
       const personasValidas: Persona[] = [];
       
       dtos.forEach((dto, index) => {
         try {
-          // Extraer el objeto persona si viene anidado
           const personaData = dto.persona || dto;
-          const id = personaData.id || personaData.ID || personaData.Id;
+          const id = personaData.ID || personaData.id || personaData.Id;
           
           if (!id || id === 0) {
-            console.warn(`⚠️ Saltando registro sin ID en posición ${index}. Item completo:`, dto);
+            console.warn(`Saltando registro sin ID en posición ${index}`);
             return;
           }
           
@@ -146,82 +144,91 @@ export class PersonaRepositoryAzure implements IPersonaRepository {
   }
 
   public async getPersonaPorId(idPersona: number): Promise<Persona> {
-  console.log(`Repository: Obteniendo persona con ID ${idPersona}...`);
-  
-  try {
-
-    let dto = await this._api.get<any>(`/personas/${idPersona}`);
-    console.log(`Repository: Respuesta de la API:`, dto);
+    console.log(`Repository: Obteniendo persona con ID ${idPersona}...`);
     
-    // Si devuelve texto plano "value" o string, intenta parsearlo
-    if (typeof dto === 'string') {
-      console.log('La API devolvió texto plano:', dto);
+    try {
+      let dto = await this._api.get<any>(`/personas/${idPersona}`);
+      console.log(`Repository: Respuesta de la API:`, dto);
       
-      // Intenta obtener del endpoint de listado y filtrar
-      console.log('Intentando obtener del listado completo...');
-      const lista = await this._api.get<any[]>('/personas');
-      
-      const personaEncontrada = lista.find(item => {
-        const personaData = item.persona || item;
-        return personaData.id === idPersona || personaData.ID === idPersona;
-      });
-      
-      if (!personaEncontrada) {
-        throw new Error(`Persona con ID ${idPersona} no encontrada`);
+      if (typeof dto === 'string') {
+        console.log('La API devolvió texto plano, buscando en listado...');
+        const lista = await this._api.get<any[]>('/personas');
+        
+        const personaEncontrada = lista.find(item => {
+          const personaData = item.persona || item;
+          return personaData.ID === idPersona || personaData.id === idPersona;
+        });
+        
+        if (!personaEncontrada) {
+          throw new Error(`Persona con ID ${idPersona} no encontrada`);
+        }
+        
+        dto = personaEncontrada;
+        console.log('Persona encontrada en el listado:', dto);
       }
       
-      dto = personaEncontrada;
-      console.log('Persona encontrada en el listado:', dto);
+      const persona = this.dtoToEntity(dto);
+      return persona;
+    } catch (error) {
+      console.error(`Repository: Error al obtener persona ${idPersona}:`, error);
+      throw error;
     }
-    
-    const persona = this.dtoToEntity(dto);
-    return persona;
-  } catch (error) {
-    console.error(`Repository: Error al obtener persona ${idPersona}:`, error);
-    throw error;
   }
-}
 
   public async crearPersona(personaNueva: Persona): Promise<number> {
-  console.log('Repository: Creando nueva persona...');
-  
-  try {
-    const dto = this.entityToDto(personaNueva);
+    console.log('Repository: Creando nueva persona...');
     
-    const { id, ...dtoSinId } = dto;
-    
-    console.log('DTO sin ID para POST:', dtoSinId);
-    
-    const response = await this._api.post<{ id: number }>('/personas', dtoSinId);
-    console.log(`Repository: Persona creada con ID ${response.id}`);
-    
-    return response.id;
-  } catch (error) {
-    console.error('Repository: Error al crear persona:', error);
-    throw error;
+    try {
+      // Para crear, NO enviamos el ID
+      const dto = this.entityToDto(personaNueva);
+      
+      // Eliminar el ID para POST
+      const { ID, ...dtoSinId } = dto;
+      
+      console.log('DTO sin ID para POST:', dtoSinId);
+      
+      const response = await this._api.post<{ id: number; ID: number }>('/personas', dtoSinId);
+      
+      // La respuesta puede venir con 'id' o 'ID'
+      const nuevoId = response.ID || response.id;
+      console.log(`Repository: Persona creada con ID ${nuevoId}`);
+      
+      return nuevoId;
+    } catch (error) {
+      console.error('Repository: Error al crear persona:', error);
+      throw error;
+    }
   }
-}
 
   public async actualizarPersona(idPersona: number, persona: Persona): Promise<number> {
-  console.log(`🔄 Repository: Actualizando persona ${idPersona}...`);
-  
-  try {
-    const dto = this.entityToDto(persona);
+    console.log(`\n${'='.repeat(70)}`);
+    console.log(`🔄 Repository: Actualizando persona ${idPersona}...`);
+    console.log('='.repeat(70));
     
-    // Asegurar que el ID del DTO coincida con el ID de la URL
-    dto.id = idPersona;
-    
-    console.log('DTO con ID corregido:', dto);
-    
-    await this._api.put<void>(`/personas/${idPersona}`, dto);
-    console.log(`Repository: Persona ${idPersona} actualizada`);
-    
-    return idPersona;
-  } catch (error) {
-    console.error(`Repository: Error al actualizar persona ${idPersona}:`, error);
-    throw error;
+    try {
+      // ✅ SOLUCIÓN: Pasar el idPersona al método entityToDto para que use ese ID
+      const dto = this.entityToDto(persona, idPersona);
+      
+      console.log('\n📤 DTO que se enviará a la API (con nombres C#):');
+      console.log(JSON.stringify(dto, null, 2));
+      console.log(`\n📍 URL: PUT /personas/${idPersona}`);
+      console.log('\n✔️ Verificación:');
+      console.log(`  - ID en URL: ${idPersona}`);
+      console.log(`  - ID en DTO: ${dto.ID}`);
+      console.log(`  - ¿Coinciden? ${idPersona === dto.ID ? '✅ SÍ' : '❌ NO'}`);
+      
+      await this._api.put<void>(`/personas/${idPersona}`, dto);
+      
+      console.log('\n✅ Repository: Persona actualizada exitosamente');
+      console.log('='.repeat(70) + '\n');
+      
+      return idPersona;
+    } catch (error) {
+      console.error('\n❌ Repository: Error al actualizar persona:', error);
+      console.error('='.repeat(70) + '\n');
+      throw error;
+    }
   }
-}
 
   public async eliminarPersona(idPersona: number): Promise<number> {
     console.log(`Repository: Eliminando persona ${idPersona}...`);

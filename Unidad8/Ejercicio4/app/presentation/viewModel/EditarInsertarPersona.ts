@@ -114,6 +114,7 @@ export class EditarInsertarPersonaVM {
   // Action asíncrono que carga los datos de una persona existente para edición
   @action
   public async cargarPersona(id: number): Promise<void> {
+    console.log(`🔄 ViewModel: Cargando persona con ID ${id}...`);
     // Activa el indicador de carga
     this._isLoading = true;
     // Limpia errores previos
@@ -122,6 +123,8 @@ export class EditarInsertarPersonaVM {
     try {
       // Obtiene la persona del caso de uso
       const persona = await this._useCase.getPersonaById(id);
+      console.log('✅ ViewModel: Persona cargada:', persona.getNombreCompleto());
+      
       // Actualiza el estado con los datos de la persona
       runInAction(() => {
         this._id = persona.id;
@@ -133,8 +136,11 @@ export class EditarInsertarPersonaVM {
         this._telefono = persona.telefono;
         this._idDepartamento = persona.idDepartamento;
         this._isEditMode = true;
+        
+        console.log('📝 ViewModel: Estado actualizado con ID:', this._id);
       });
     } catch (error) {
+      console.error('❌ ViewModel: Error al cargar persona:', error);
       // Actualiza el estado de error
       runInAction(() => {
         this._error = 'Error al cargar la persona';
@@ -150,6 +156,7 @@ export class EditarInsertarPersonaVM {
   // Action que limpia el formulario para crear una nueva persona
   @action
   public limpiarFormulario(): void {
+    console.log('🧹 ViewModel: Limpiando formulario...');
     this._id = 0;
     this._nombre = '';
     this._apellidos = '';
@@ -176,15 +183,26 @@ export class EditarInsertarPersonaVM {
       return;
     }
 
+    console.log('💾 ViewModel: Iniciando guardado de persona...');
+    console.log('📋 ViewModel: Modo edición:', this._isEditMode);
+    console.log('🆔 ViewModel: ID actual:', this._id);
+    
     // Activa el indicador de carga
     this._isLoading = true;
     // Limpia errores previos
     this._error = null;
     
     try {
+      // 🔧 FIX CRÍTICO: Crear la persona con el ID correcto
+      // En modo edición, usar this._id que se cargó desde la base de datos
+      // En modo creación, usar 0
+      const idParaCrear = this._isEditMode ? this._id : 0;
+      
+      console.log('🏗️ ViewModel: Creando entidad Persona con ID:', idParaCrear);
+      
       // Crea una instancia de la entidad Persona con todos los datos
       const persona = new Persona(
-        this._id,
+        idParaCrear, // ✅ Usar el ID correcto según el modo
         this._nombre,
         this._apellidos,
         this._foto,
@@ -194,15 +212,26 @@ export class EditarInsertarPersonaVM {
         this._idDepartamento
       );
       
+      console.log('✅ ViewModel: Entidad creada:', {
+        id: persona.id,
+        nombre: persona.getNombreCompleto(),
+        modo: this._isEditMode ? 'EDICIÓN' : 'CREACIÓN'
+      });
+      
       // Decide si crear o actualizar según el modo
       if (this._isEditMode) {
-        // Actualiza la persona existente
+        console.log(`🔄 ViewModel: Actualizando persona con ID ${this._id}...`);
+        // ✅ IMPORTANTE: Pasar el ID como primer parámetro
         await this._useCase.actualizarPersona(this._id, persona);
+        console.log('✅ ViewModel: Persona actualizada exitosamente');
       } else {
+        console.log('➕ ViewModel: Creando nueva persona...');
         // Crea una nueva persona
-        await this._useCase.crearPersona(persona);
+        const nuevoId = await this._useCase.crearPersona(persona);
+        console.log(`✅ ViewModel: Persona creada con ID ${nuevoId}`);
       }
     } catch (error) {
+      console.error('❌ ViewModel: Error al guardar persona:', error);
       // Actualiza el estado de error
       runInAction(() => {
         this._error = error instanceof Error ? error.message : 'Error al guardar';
