@@ -46,8 +46,7 @@
               "RelativeToolTip": "TresEnRayaASP\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-02-04T11:40:57.315Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-04T11:40:57.315Z"
             },
             {
               "$type": "Document",
@@ -59,8 +58,7 @@
               "RelativeToolTip": "TresEnRayaASP\\Entities\\Jugada.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-04T11:38:30.924Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-04T11:38:30.924Z"
             },
             {
               "$type": "Document",
@@ -70,7 +68,7 @@
               "RelativeDocumentMoniker": "TresEnRayaASP\\Entities\\GameInfo.cs",
               "ToolTip": "C:\\Users\\albad\\OneDrive\\Documentos\\GitHub\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Entities\\GameInfo.cs",
               "RelativeToolTip": "TresEnRayaASP\\Entities\\GameInfo.cs",
-              "ViewState": "AgIAABoAAAAAAAAAAAA2wCgAAAATAAAAAAAAAA==",
+              "ViewState": "AgIAABsAAAAAAAAAAAAUwCgAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-04T11:35:53.334Z",
               "EditorCaption": ""
@@ -85,8 +83,7 @@
               "RelativeToolTip": "TresEnRayaASP\\Hubs\\JuegoHub.cs",
               "ViewState": "AgIAABYAAAAAAAAAAAAQwAgAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-04T11:33:15.626Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-04T11:33:15.626Z"
             },
             {
               "$type": "Document",
@@ -110,8 +107,7 @@
               "RelativeToolTip": "TresEnRayaASP\\Program.cs",
               "ViewState": "AgIAAAMAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-04T11:34:25.379Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-04T11:34:25.379Z"
             }
           ]
         }
