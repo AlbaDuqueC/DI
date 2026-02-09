@@ -1,5 +1,4 @@
-﻿using TresEnRayaASP.Entities;
-using TresEnRayaASP.Hubs;
+﻿using TresEnRayaASP.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 

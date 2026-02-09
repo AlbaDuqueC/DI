@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TresEnRayaASP")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a78b65bb3726aaa6506a5f334ee81ef46e2e1291")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+528eef2c792aabd7ab23831d15818e6b42e7e92a")]
 [assembly: System.Reflection.AssemblyProductAttribute("TresEnRayaASP")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TresEnRayaASP")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

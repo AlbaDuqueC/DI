@@ -4,7 +4,10 @@ public static class GameInfo
 {
     public static int numJugadores = 0;
     public static string[,] tablero = new string[3, 3];
+    public static List<string> conexiones = new List<string>(); // ⬅️ AÑADIR ESTO
     public static string turnoActual = "X";
+    public static bool juegoIniciado = false;
+    public static bool juegoTerminado = false;
     public static string? ganador = null;
 
     public static void Jugada(int fila, int columna)
@@ -16,6 +19,12 @@ public static class GameInfo
             if (VerificarGanador(turnoActual))
             {
                 ganador = turnoActual;
+                juegoTerminado = true;
+            }
+            else if (TableroLleno())
+            {
+                juegoTerminado = true;
+                ganador = null;
             }
             else
             {
@@ -28,22 +37,35 @@ public static class GameInfo
     {
         tablero = new string[3, 3];
         turnoActual = "X";
+        juegoIniciado = true;
+        juegoTerminado = false;
+        ganador = null;
+    }
+
+    public static void ReiniciarJuego()
+    {
+        numJugadores = 0;
+        tablero = new string[3, 3];
+        conexiones.Clear();
+        turnoActual = "X";
+        juegoIniciado = false;
+        juegoTerminado = false;
         ganador = null;
     }
 
     private static bool VerificarGanador(string simbolo)
     {
-        // Filas
+        // Verificar filas
         for (int i = 0; i < 3; i++)
             if (tablero[i, 0] == simbolo && tablero[i, 1] == simbolo && tablero[i, 2] == simbolo)
                 return true;
 
-        // Columnas
+        // Verificar columnas
         for (int i = 0; i < 3; i++)
             if (tablero[0, i] == simbolo && tablero[1, i] == simbolo && tablero[2, i] == simbolo)
                 return true;
 
-        // Diagonales
+        // Verificar diagonales
         if (tablero[0, 0] == simbolo && tablero[1, 1] == simbolo && tablero[2, 2] == simbolo)
             return true;
 
@@ -51,5 +73,14 @@ public static class GameInfo
             return true;
 
         return false;
+    }
+
+    private static bool TableroLleno()
+    {
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (tablero[i, j] == null)
+                    return false;
+        return true;
     }
 }
