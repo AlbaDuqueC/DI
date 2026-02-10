@@ -1,0 +1,8 @@
+C:\Users\alba.duque\Desktop\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\TresEnRayaASP.exe
+C:\Users\alba.duque\Desktop\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\appsettings.Development.json
+C:\Users\alba.duque\Desktop\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\appsettings.json
+C:\Users\alba.duque\Desktop\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\libman.json
+C:\Users\alba.duque\Desktop\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\TresEnRayaASP.dll
+C:\Users\alba.duque\Desktop\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\TresEnRayaASP.deps.json
+C:\Users\alba.duque\Desktop\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\TresEnRayaASP.runtimeconfig.json
+C:\Users\alba.duque\Desktop\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\TresEnRayaASP.pdb

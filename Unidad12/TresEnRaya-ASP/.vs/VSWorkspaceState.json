@@ -1,6 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\TresEnRayaASP",
+    "\\TresEnRayaASP\\TresEnRayaASP",
+    "\\TresEnRayaASP\\TresEnRayaASP\\Entities"
   ],
+  "SelectedNode": "\\TresEnRayaASP\\TresEnRayaASP\\Entities\\GameInfo.cs",
   "PreviewInSolutionExplorer": false
 }

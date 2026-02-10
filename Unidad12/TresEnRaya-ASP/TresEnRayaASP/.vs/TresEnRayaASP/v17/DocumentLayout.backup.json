@@ -1,29 +1,29 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\albad\\OneDrive\\Documentos\\GitHub\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\",
+  "WorkspaceRootPath": "C:\\Users\\alba.duque\\Desktop\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|c:\\users\\albad\\onedrive\\documentos\\github\\di\\unidad12\\tresenraya-asp\\tresenrayaasp\\tresenrayaasp\\entities\\gameinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|solutionrelative:tresenrayaasp\\entities\\gameinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|c:\\users\\albad\\onedrive\\documentos\\github\\di\\unidad12\\tresenraya-asp\\tresenrayaasp\\tresenrayaasp\\hubs\\juegohub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|c:\\users\\alba.duque\\desktop\\di\\unidad12\\tresenraya-asp\\tresenrayaasp\\tresenrayaasp\\hubs\\juegohub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|solutionrelative:tresenrayaasp\\hubs\\juegohub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|c:\\users\\albad\\onedrive\\documentos\\github\\di\\unidad12\\tresenraya-asp\\tresenrayaasp\\tresenrayaasp\\entities\\jugada.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|solutionrelative:tresenrayaasp\\entities\\jugada.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|c:\\users\\albad\\onedrive\\documentos\\github\\di\\unidad12\\tresenraya-asp\\tresenrayaasp\\tresenrayaasp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|c:\\users\\alba.duque\\desktop\\di\\unidad12\\tresenraya-asp\\tresenrayaasp\\tresenrayaasp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|solutionrelative:tresenrayaasp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|c:\\users\\albad\\onedrive\\documentos\\github\\di\\unidad12\\tresenraya-asp\\tresenrayaasp\\tresenrayaasp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|c:\\users\\alba.duque\\desktop\\di\\unidad12\\tresenraya-asp\\tresenrayaasp\\tresenrayaasp\\entities\\gameinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|solutionrelative:tresenrayaasp\\entities\\gameinfo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|c:\\users\\alba.duque\\desktop\\di\\unidad12\\tresenraya-asp\\tresenrayaasp\\tresenrayaasp\\entities\\jugada.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|solutionrelative:tresenrayaasp\\entities\\jugada.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|c:\\users\\alba.duque\\desktop\\di\\unidad12\\tresenraya-asp\\tresenrayaasp\\tresenrayaasp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|solutionrelative:tresenrayaasp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|c:\\users\\albad\\onedrive\\documentos\\github\\di\\unidad12\\tresenraya-asp\\tresenrayaasp\\tresenrayaasp\\libman.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|c:\\users\\alba.duque\\desktop\\di\\unidad12\\tresenraya-asp\\tresenrayaasp\\tresenrayaasp\\libman.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{20559614-EE4F-4CAF-A604-1DEA5296AEBD}|TresEnRayaASP\\TresEnRayaASP.csproj|solutionrelative:tresenrayaasp\\libman.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
@@ -34,53 +34,54 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "GameInfo.cs",
-              "DocumentMoniker": "C:\\Users\\albad\\OneDrive\\Documentos\\GitHub\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Entities\\GameInfo.cs",
+              "DocumentMoniker": "C:\\Users\\alba.duque\\Desktop\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Entities\\GameInfo.cs",
               "RelativeDocumentMoniker": "TresEnRayaASP\\Entities\\GameInfo.cs",
-              "ToolTip": "C:\\Users\\albad\\OneDrive\\Documentos\\GitHub\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Entities\\GameInfo.cs",
+              "ToolTip": "C:\\Users\\alba.duque\\Desktop\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Entities\\GameInfo.cs",
               "RelativeToolTip": "TresEnRayaASP\\Entities\\GameInfo.cs",
-              "ViewState": "AgIAADoAAAAAAAAAAADwv1UAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAQwGQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-04T11:35:53.334Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\albad\\OneDrive\\Documentos\\GitHub\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\alba.duque\\Desktop\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Program.cs",
               "RelativeDocumentMoniker": "TresEnRayaASP\\Program.cs",
-              "ToolTip": "C:\\Users\\albad\\OneDrive\\Documentos\\GitHub\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Program.cs",
+              "ToolTip": "C:\\Users\\alba.duque\\Desktop\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Program.cs",
               "RelativeToolTip": "TresEnRayaASP\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-04T11:34:25.379Z"
+              "WhenOpened": "2026-02-04T11:34:25.379Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "JuegoHub.cs",
-              "DocumentMoniker": "C:\\Users\\albad\\OneDrive\\Documentos\\GitHub\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Hubs\\JuegoHub.cs",
+              "DocumentMoniker": "C:\\Users\\alba.duque\\Desktop\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Hubs\\JuegoHub.cs",
               "RelativeDocumentMoniker": "TresEnRayaASP\\Hubs\\JuegoHub.cs",
-              "ToolTip": "C:\\Users\\albad\\OneDrive\\Documentos\\GitHub\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Hubs\\JuegoHub.cs",
+              "ToolTip": "C:\\Users\\alba.duque\\Desktop\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Hubs\\JuegoHub.cs",
               "RelativeToolTip": "TresEnRayaASP\\Hubs\\JuegoHub.cs",
-              "ViewState": "AgIAAKYAAAAAAAAAAAAwwLUAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAuwCoAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-04T11:33:15.626Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Jugada.cs",
-              "DocumentMoniker": "C:\\Users\\albad\\OneDrive\\Documentos\\GitHub\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Entities\\Jugada.cs",
+              "DocumentMoniker": "C:\\Users\\alba.duque\\Desktop\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Entities\\Jugada.cs",
               "RelativeDocumentMoniker": "TresEnRayaASP\\Entities\\Jugada.cs",
-              "ToolTip": "C:\\Users\\albad\\OneDrive\\Documentos\\GitHub\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Entities\\Jugada.cs",
+              "ToolTip": "C:\\Users\\alba.duque\\Desktop\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\Entities\\Jugada.cs",
               "RelativeToolTip": "TresEnRayaASP\\Entities\\Jugada.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -91,9 +92,9 @@
               "$type": "Document",
               "DocumentIndex": 4,
               "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\albad\\OneDrive\\Documentos\\GitHub\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\appsettings.json",
+              "DocumentMoniker": "C:\\Users\\alba.duque\\Desktop\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\appsettings.json",
               "RelativeDocumentMoniker": "TresEnRayaASP\\appsettings.json",
-              "ToolTip": "C:\\Users\\albad\\OneDrive\\Documentos\\GitHub\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\appsettings.json",
+              "ToolTip": "C:\\Users\\alba.duque\\Desktop\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\appsettings.json",
               "RelativeToolTip": "TresEnRayaASP\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
@@ -103,9 +104,9 @@
               "$type": "Document",
               "DocumentIndex": 5,
               "Title": "libman.json",
-              "DocumentMoniker": "C:\\Users\\albad\\OneDrive\\Documentos\\GitHub\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\libman.json",
+              "DocumentMoniker": "C:\\Users\\alba.duque\\Desktop\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\libman.json",
               "RelativeDocumentMoniker": "TresEnRayaASP\\libman.json",
-              "ToolTip": "C:\\Users\\albad\\OneDrive\\Documentos\\GitHub\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\libman.json",
+              "ToolTip": "C:\\Users\\alba.duque\\Desktop\\DI\\Unidad12\\TresEnRaya-ASP\\TresEnRayaASP\\TresEnRayaASP\\libman.json",
               "RelativeToolTip": "TresEnRayaASP\\libman.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",

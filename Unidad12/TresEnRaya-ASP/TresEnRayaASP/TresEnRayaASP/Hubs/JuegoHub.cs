@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using System;
 using TresEnRayaASP.Entities;
 
 namespace TresEnRayaASP.Hubs;
@@ -7,82 +8,76 @@ public class JuegoHub : Hub
 {
     public override async Task OnConnectedAsync()
     {
-        try
+        await base.OnConnectedAsync();
+
+        lock (GameInfo._lock)
         {
-            GameInfo.numJugadores++;
-            GameInfo.conexiones.Add(Context.ConnectionId);
-
-            Console.WriteLine($"✅ Jugador conectado. Total: {GameInfo.numJugadores}");
-
-            if (GameInfo.numJugadores == 1)
+            GameInfo.conexiones.RemoveAll(id => string.IsNullOrEmpty(id));
+            if (GameInfo.conexiones.Count < 2 && !GameInfo.conexiones.Contains(Context.ConnectionId))
             {
-                // Primer jugador - asignar X
-                await Clients.Caller.SendAsync("EsperarOponente", new
-                {
-                    mensaje = "Esperando oponente...",
-                    simbolo = "X"
-                });
-
-                await Clients.Caller.SendAsync("AsignarSimbolo", "X");
-
-                Console.WriteLine("👤 Primer jugador (X) esperando");
+                GameInfo.conexiones.Add(Context.ConnectionId);
             }
-            else if (GameInfo.numJugadores == 2)
+            else if (GameInfo.conexiones.Count >= 2)
             {
-                // Segundo jugador - iniciar juego
-                GameInfo.StartGame();
+                _ = Clients.Caller.SendAsync("Error", "Partida llena");
+                return;
+            }
+        }
 
-                Console.WriteLine("🎮 Juego iniciado con 2 jugadores");
+        // FIX: Esperamos un poco para que el cliente termine de conectar del todo
+        _ = Task.Run(async () => {
+            await Task.Delay(500);
 
-                // Asignar símbolos
+            if (GameInfo.conexiones.Count == 1)
+            {
+                await Clients.Caller.SendAsync("AsignarSimbolo", "X");
+            }
+            else if (GameInfo.conexiones.Count == 2)
+            {
                 await Clients.Client(GameInfo.conexiones[0]).SendAsync("AsignarSimbolo", "X");
                 await Clients.Client(GameInfo.conexiones[1]).SendAsync("AsignarSimbolo", "O");
-
-                // Notificar inicio
                 await Clients.All.SendAsync("JuegoIniciado", new
                 {
-                    mensaje = "¡El juego ha comenzado!",
                     tablero = GameInfo.tablero,
                     turno = GameInfo.turnoActual
                 });
             }
-            else
-            {
-                // Más de 2 jugadores
-                GameInfo.numJugadores--;
-                GameInfo.conexiones.Remove(Context.ConnectionId);
-                await Clients.Caller.SendAsync("Error", "El juego ya está completo");
-                Context.Abort();
-            }
-
-            await base.OnConnectedAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"❌ Error en OnConnectedAsync: {ex.Message}");
-        }
+        });
     }
+
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         try
         {
-            GameInfo.conexiones.Remove(Context.ConnectionId);
-            GameInfo.numJugadores--;
+            bool eraJugadorActivo = false;
 
-            Console.WriteLine($"👋 Jugador desconectado. Total: {GameInfo.numJugadores}");
-
-            if (GameInfo.numJugadores < 2 && GameInfo.juegoIniciado)
+            lock (GameInfo._lock)
             {
-                GameInfo.ReiniciarJuego();
-                await Clients.All.SendAsync("JugadorDesconectado", "Un jugador se desconectó");
+                if (GameInfo.conexiones.Contains(Context.ConnectionId))
+                {
+                    eraJugadorActivo = true;
+                    GameInfo.conexiones.Remove(Context.ConnectionId);
+                    GameInfo.numJugadores = GameInfo.conexiones.Count;
+
+                    // Si alguien se va, reseteamos para que el que se quede (o el nuevo) pueda empezar de cero
+                    GameInfo.ReiniciarJuego();
+                }
+            }
+
+            if (eraJugadorActivo)
+            {
+                await Clients.All.SendAsync("JugadorDesconectado", new
+                {
+                    mensaje = "Tu oponente se ha ido. El juego se ha reiniciado."
+                });
             }
 
             await base.OnDisconnectedAsync(exception);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"❌ Error en OnDisconnectedAsync: {ex.Message}");
+            Console.WriteLine($"❌ Error en OnDisconnected: {ex.Message}");
         }
     }
 
@@ -90,53 +85,34 @@ public class JuegoHub : Hub
     {
         try
         {
-            if (!GameInfo.juegoIniciado)
+            string simboloJugador = "";
+            bool esTurnoValido = false;
+
+            lock (GameInfo._lock)
             {
-                await Clients.Caller.SendAsync("Error", "El juego aún no ha iniciado");
+                if (!GameInfo.juegoIniciado || GameInfo.juegoTerminado) return;
+
+                // Corregido: Usamos 'indice' en ambos sitios
+                int indice = GameInfo.conexiones.IndexOf(Context.ConnectionId);
+                if (indice == -1) return;
+
+                simboloJugador = (indice == 0) ? "X" : "O";
+
+                if (simboloJugador == GameInfo.turnoActual)
+                {
+                    esTurnoValido = true;
+                    // Ejecuta la lógica
+                    GameInfo.Jugada(jugada.movimiento[0], jugada.movimiento[1]);
+                }
+            }
+
+            if (!esTurnoValido)
+            {
+                await Clients.Caller.SendAsync("Error", "No es tu turno.");
                 return;
             }
 
-            if (GameInfo.juegoTerminado)
-            {
-                await Clients.Caller.SendAsync("Error", "El juego ya terminó");
-                return;
-            }
-
-            int fila = jugada.movimiento[0];
-            int columna = jugada.movimiento[1];
-
-            Console.WriteLine($"📤 Movimiento recibido: [{fila}, {columna}]");
-
-            // Validar posición
-            if (fila < 0 || fila > 2 || columna < 0 || columna > 2)
-            {
-                await Clients.Caller.SendAsync("Error", "Posición inválida");
-                return;
-            }
-
-            // Validar casilla vacía
-            if (GameInfo.tablero[fila, columna] != null)
-            {
-                await Clients.Caller.SendAsync("Error", "Casilla ocupada");
-                return;
-            }
-
-            // Determinar símbolo del jugador
-            string simboloJugador = GameInfo.conexiones.IndexOf(Context.ConnectionId) == 0 ? "X" : "O";
-
-            // Validar turno
-            if (simboloJugador != GameInfo.turnoActual)
-            {
-                await Clients.Caller.SendAsync("Error", "No es tu turno");
-                return;
-            }
-
-            // Realizar jugada
-            GameInfo.Jugada(fila, columna);
-
-            Console.WriteLine($"✅ Jugada: {simboloJugador} en [{fila}, {columna}]. Próximo turno: {GameInfo.turnoActual}");
-
-            // Enviar actualización a todos
+            // Notificar a todos (FUERA del lock)
             await Clients.All.SendAsync("ActualizarTablero", new
             {
                 tablero = GameInfo.tablero,
@@ -145,38 +121,30 @@ public class JuegoHub : Hub
                 ganador = GameInfo.ganador
             });
 
-            // Si el juego terminó
             if (GameInfo.juegoTerminado)
             {
-                if (GameInfo.ganador == null)
+                await Clients.All.SendAsync("JuegoTerminado", new
                 {
-                    // Empate
-                    await Clients.All.SendAsync("JuegoTerminado", new
-                    {
-                        resultado = "Empate",
-                        mensaje = "¡Empate!"
-                    });
-
-                    Console.WriteLine("🤝 Juego terminado: EMPATE");
-                }
-                else
-                {
-                    // Hay ganador
-                    await Clients.All.SendAsync("JuegoTerminado", new
-                    {
-                        resultado = GameInfo.ganador == simboloJugador ? "Victoria" : "Derrota",
-                        mensaje = GameInfo.ganador == simboloJugador ? "¡Ganaste!" : "Perdiste",
-                        ganador = GameInfo.ganador
-                    });
-
-                    Console.WriteLine($"🏆 Juego terminado: Ganador {GameInfo.ganador}");
-                }
+                    mensaje = GameInfo.ganador == null ? "¡Empate!" : $"¡Ganador: {GameInfo.ganador}!",
+                    ganador = GameInfo.ganador
+                });
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"❌ Error en SendMove: {ex.Message}");
-            await Clients.Caller.SendAsync("Error", "Error al procesar el movimiento");
         }
     }
+
+    public async Task ReiniciarJuego()
+    {
+        GameInfo.ReiniciarJuego();
+        await Clients.All.SendAsync("JuegoReiniciado", new { mensaje = "Juego reiniciado." });
+    }
+}
+
+// Asegúrate de que esta clase coincida con el objeto que mandas desde React
+public class Jugada
+{
+    public int[] movimiento { get; set; } = new int[2];
 }

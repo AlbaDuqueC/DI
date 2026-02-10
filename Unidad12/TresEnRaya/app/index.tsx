@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // <--- Añade useRef aquí
 import {
   StyleSheet,
   Text,
@@ -22,20 +22,52 @@ export default function Index() {
   const [actualizacion, setActualizacion] = useState(0);
   const [intentosConexion, setIntentosConexion] = useState(0);
 
-  useEffect(() => {
-    conectarServidor();
-    
-    // Verificar estado de conexión cada 3 segundos
+  const connects = useRef(false); // 1. Crea una referencia
+
+
+
+
+
+useEffect(() => {
+    // Solo ejecutamos la conexión automática la primera vez que se monta el componente
+    if (!connects.current) {
+        connects.current = true;
+        conectarServidor();
+    }
+
     const intervalo = setInterval(() => {
-      const estado = container.contextoSignalR.obtenerEstadoConexion();
-      setEstadoConexion(estado);
+        // Usamos el método de SignalR directamente para evitar dependencias
+        const estado = container.contextoSignalR.obtenerEstadoConexion();
+        setEstadoConexion(estado);
     }, 3000);
 
     return () => {
-      clearInterval(intervalo);
-      container.contextoSignalR.desconectar();
+        clearInterval(intervalo);
+        // NOTA: Si quitas el comentario de abajo, cada vez que guardes cambios 
+        // en el código (Hot Reload), el servidor se reiniciará.
+        // container.contextoSignalR.desconectar();
     };
-  }, []);
+}, []);
+
+const reiniciarJuego = async () => {
+  console.log('🔄 Solicitando reinicio al servidor...');
+  
+  try {
+    // 1. Llamamos al método que ya tienes en tu clase
+    await container.contextoSignalR.reiniciarJuego();
+    
+    // 2. Limpiamos el estado local para que la UI se vea fresca
+    setEsperandoOponente(false);
+    setMiSimbolo(null);
+    setJuego(null);
+    
+    console.log('✅ Petición de reinicio enviada');
+  } catch (error) {
+    console.error('❌ Error al reiniciar:', error);
+    // Si falla el invoke (por pérdida de conexión), entonces sí reconectamos
+    conectarServidor();
+  }
+};
 
   const conectarServidor = async () => {
     console.log('🔄 Intentando conectar al servidor...');
@@ -181,17 +213,7 @@ export default function Index() {
     }
   };
 
-  const reiniciarJuego = () => {
-    console.log('🔄 Reiniciando juego...');
-    setEsperandoOponente(false);
-    setMiSimbolo(null);
-    setJuego(null);
-    container.contextoSignalR.desconectar();
-    setTimeout(() => {
-      conectarServidor();
-    }, 500);
-  };
-
+  
   if (!conectado) {
     return (
       <View style={styles.container}>
