@@ -19,6 +19,8 @@ export class RepositorioJuego implements IRepositorioJuego {
     this.juego.jugadores.push(jugador);
     this.miIdJugador = idJugador;
     
+    console.log('🎮 Juego creado:', { idJugador, simbolo: 'X' });
+    
     return this.juego;
   }
 
@@ -36,6 +38,8 @@ export class RepositorioJuego implements IRepositorioJuego {
     this.juego.estado = EstadoJuego.EnCurso;
     this.miIdJugador = idJugador;
 
+    console.log('🎮 Jugador unido:', { idJugador, simbolo: 'O' });
+
     return this.juego;
   }
 
@@ -47,27 +51,44 @@ export class RepositorioJuego implements IRepositorioJuego {
     const jugador = this.juego.jugadores.find(j => j.id === idJugador);
 
     if (!jugador) {
+      console.error('❌ Jugador no encontrado:', { idJugador, jugadoresEnJuego: this.juego.jugadores.map(j => j.id) });
       throw new Error('No eres parte de este juego');
     }
 
+    console.log('🎲 Verificando movimiento:', {
+      idJugador,
+      simbolo: jugador.simbolo,
+      esTurno: jugador.esTurno,
+      fila,
+      columna,
+      casillaActual: this.juego.tablero[fila][columna]
+    });
+
     if (!jugador.esTurno) {
+      console.error('❌ No es el turno del jugador');
       throw new Error('No es tu turno');
     }
 
     if (this.juego.tablero[fila][columna] !== null) {
+      console.error('❌ Casilla ocupada');
       throw new Error('Casilla ocupada');
     }
 
     // IMPORTANTE: Actualizar el tablero directamente
     this.juego.tablero[fila][columna] = jugador.simbolo;
 
+    console.log('✅ Movimiento realizado:', { fila, columna, simbolo: jugador.simbolo });
+
     // Verificar ganador
     if (this.verificarGanador(this.juego, jugador.simbolo)) {
       this.juego.establecerGanador(jugador);
+      console.log('🏆 ¡Ganador!:', jugador.simbolo);
     } else if (this.tableroLleno(this.juego)) {
       this.juego.estado = EstadoJuego.Finalizado;
+      console.log('🤝 Empate');
     } else {
       this.juego.cambiarTurno();
+      console.log('🔄 Turno cambiado localmente');
     }
 
     // Enviar al servidor Azure
@@ -84,7 +105,7 @@ export class RepositorioJuego implements IRepositorioJuego {
   actualizarDesdeServidor(tablero: any, ganador: string | null): void {
     if (!this.juego) return;
 
-    console.log('Actualizando desde servidor:', tablero);
+    console.log('📥 Actualizando desde servidor:', { tablero, ganador });
 
     // Actualizar tablero desde servidor
     for (let i = 0; i < 3; i++) {
@@ -109,6 +130,7 @@ export class RepositorioJuego implements IRepositorioJuego {
       );
       if (jugadorGanador) {
         this.juego.establecerGanador(jugadorGanador);
+        console.log('🏆 Ganador establecido:', ganador);
       }
     }
   }
@@ -132,6 +154,7 @@ export class RepositorioJuego implements IRepositorioJuego {
         jugador = new Jugador(nuevoId, simboloEnum, esTurno);
         this.juego.jugadores.push(jugador);
         this.miIdJugador = nuevoId;
+        console.log('👤 Jugador creado:', { id: nuevoId, simbolo, esTurno });
       }
       
       return;
@@ -141,16 +164,57 @@ export class RepositorioJuego implements IRepositorioJuego {
     if (jugador) {
       jugador.simbolo = simbolo === 'X' ? SimboloJugador.X : SimboloJugador.O;
       jugador.esTurno = simbolo === 'X'; // X siempre empieza
+      console.log('👤 Símbolo actualizado:', { id: this.miIdJugador, simbolo });
     }
   }
 
   actualizarTurno(turnoActual: string): void {
     if (!this.juego) return;
 
-    console.log('Actualizando turno:', turnoActual);
+    console.log('🔄 ===== ACTUALIZAR TURNO =====');
+    console.log('Turno recibido del servidor:', turnoActual);
+    console.log('Jugadores ANTES de actualizar:');
+    this.juego.jugadores.forEach(j => {
+      console.log(`  - Símbolo: ${j.simbolo}, esTurno: ${j.esTurno}`);
+    });
 
     this.juego.jugadores.forEach(jugador => {
-      jugador.esTurno = jugador.simbolo.toString() === turnoActual;
+      const simboloStr = jugador.simbolo.toString();
+      const nuevoTurno = simboloStr === turnoActual;
+      
+      console.log(`  Cambio: ${simboloStr} de ${jugador.esTurno} -> ${nuevoTurno}`);
+      
+      jugador.esTurno = nuevoTurno;
+    });
+
+    console.log('Jugadores DESPUÉS de actualizar:');
+    this.juego.jugadores.forEach(j => {
+      console.log(`  - Símbolo: ${j.simbolo}, esTurno: ${j.esTurno}`);
+    });
+    console.log('🔄 ===== FIN ACTUALIZAR TURNO =====');
+  }
+
+  reiniciarEstadoLocal(): void {
+    if (!this.juego) return;
+    
+    console.log('🔄 Reiniciando estado local');
+    
+    // Reiniciar tablero
+    this.juego.tablero = [
+      [null, null, null],
+      [null, null, null],
+      [null, null, null]
+    ];
+    
+    // Reiniciar estado
+    this.juego.estado = EstadoJuego.EnCurso;
+    
+    // Limpiar ganador (acceso privado mediante casting)
+    (this.juego as any)._ganador = null;
+    
+    // X siempre empieza
+    this.juego.jugadores.forEach(j => {
+      j.esTurno = j.simbolo === SimboloJugador.X;
     });
   }
 
