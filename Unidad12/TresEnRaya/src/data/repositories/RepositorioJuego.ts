@@ -131,40 +131,53 @@ export class RepositorioJuego implements IRepositorioJuego {
       if (jugadorGanador) {
         this.juego.establecerGanador(jugadorGanador);
         console.log('🏆 Ganador establecido:', ganador);
+      } else {
+        console.log('⚠️ Ganador no encontrado en jugadores, estableciendo estado finalizado');
+        this.juego.estado = EstadoJuego.Finalizado;
       }
+    } else if (this.tableroLleno(this.juego)) {
+      // Si no hay ganador pero el tablero está lleno, es empate
+      console.log('🤝 Empate detectado');
+      this.juego.estado = EstadoJuego.Finalizado;
     }
   }
 
   establecerMiSimbolo(simbolo: string): void {
-    if (!this.juego || !this.miIdJugador) {
-      // Si no hay juego, crear el jugador
-      if (!this.juego) {
-        this.juego = new Juego(1);
-      }
-      
-      const simboloEnum = simbolo === 'X' ? SimboloJugador.X : SimboloJugador.O;
-      const esTurno = simbolo === 'X'; // X siempre empieza
-      
-      // Buscar si ya existe el jugador
-      let jugador = this.juego.jugadores.find(j => j.simbolo === simboloEnum);
-      
-      if (!jugador) {
-        // Crear nuevo jugador
-        const nuevoId = Date.now();
-        jugador = new Jugador(nuevoId, simboloEnum, esTurno);
-        this.juego.jugadores.push(jugador);
-        this.miIdJugador = nuevoId;
-        console.log('👤 Jugador creado:', { id: nuevoId, simbolo, esTurno });
-      }
-      
-      return;
+    if (!this.juego) {
+      this.juego = new Juego(1);
     }
-
-    const jugador = this.juego.jugadores.find(j => j.id === this.miIdJugador);
-    if (jugador) {
-      jugador.simbolo = simbolo === 'X' ? SimboloJugador.X : SimboloJugador.O;
-      jugador.esTurno = simbolo === 'X'; // X siempre empieza
-      console.log('👤 Símbolo actualizado:', { id: this.miIdJugador, simbolo });
+    
+    const simboloEnum = simbolo === 'X' ? SimboloJugador.X : SimboloJugador.O;
+    const esTurno = simbolo === 'X'; // X siempre empieza
+    
+    // Buscar si ya existe mi jugador
+    let miJugador = this.juego.jugadores.find(j => j.simbolo === simboloEnum);
+    
+    if (!miJugador) {
+      // Crear mi jugador
+      const nuevoId = Date.now();
+      miJugador = new Jugador(nuevoId, simboloEnum, esTurno);
+      this.juego.jugadores.push(miJugador);
+      this.miIdJugador = nuevoId;
+      console.log('👤 Mi jugador creado:', { id: nuevoId, simbolo, esTurno });
+    } else {
+      this.miIdJugador = miJugador.id;
+    }
+    
+    // ✅ CREAR EL JUGADOR OPONENTE si no existe
+    const simboloOponente = simbolo === 'X' ? SimboloJugador.O : SimboloJugador.X;
+    const existeOponente = this.juego.jugadores.find(j => j.simbolo === simboloOponente);
+    
+    if (!existeOponente) {
+      const idOponente = Date.now() + 1;
+      const esTurnoOponente = simbolo === 'O'; // Si yo soy O, X empieza
+      const oponente = new Jugador(idOponente, simboloOponente, esTurnoOponente);
+      this.juego.jugadores.push(oponente);
+      console.log('👤 Oponente creado:', { 
+        id: idOponente, 
+        simbolo: simboloOponente === SimboloJugador.X ? 'X' : 'O', 
+        esTurno: esTurnoOponente 
+      });
     }
   }
 
