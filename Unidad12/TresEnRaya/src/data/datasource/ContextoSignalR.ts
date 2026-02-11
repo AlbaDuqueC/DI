@@ -2,7 +2,9 @@ import * as signalR from '@microsoft/signalr';
 
 export class ContextoSignalR {
   private connection: signalR.HubConnection | null = null;
-  private readonly urlServidor = "https://localhost:7190/gameHub";
+
+  private readonly urlServidor = "https://tresenrayaasp-albaduque-gmcvafhhbsfrhnbm.spaincentral-01.azurewebsites.net/gameHub";
+
   
   private onAsignarSimboloCallback?: (simbolo: string) => void;
   private onJuegoIniciadoCallback?: (data: any) => void;
@@ -28,9 +30,9 @@ export class ContextoSignalR {
 
       this.connection = new signalR.HubConnectionBuilder()
         .withUrl(this.urlServidor, {
-          withCredentials: true,  // ✅ CAMBIADO A TRUE
-          skipNegotiation: false,
-          transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
+          withCredentials: true,
+          transport: signalR.HttpTransportType.LongPolling
+
         })
         .configureLogging(signalR.LogLevel.Information)
         .build();

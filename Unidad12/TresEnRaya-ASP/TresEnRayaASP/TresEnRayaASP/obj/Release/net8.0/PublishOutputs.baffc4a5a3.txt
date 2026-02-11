@@ -6,3 +6,17 @@ C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaA
 C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\TresEnRayaASP.deps.json
 C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\TresEnRayaASP.runtimeconfig.json
 C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\TresEnRayaASP.pdb
+C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\Azure.Core.dll
+C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\Azure.Identity.dll
+C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\Microsoft.Azure.SignalR.Common.dll
+C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\Microsoft.Azure.SignalR.dll
+C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\Microsoft.Azure.SignalR.Protocols.dll
+C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\Microsoft.Identity.Client.dll
+C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\Microsoft.Identity.Client.Extensions.Msal.dll
+C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\Newtonsoft.Json.dll
+C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\System.ClientModel.dll
+C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\System.Memory.Data.dll
+C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\System.Security.Cryptography.ProtectedData.dll
+C:\Users\albad\OneDrive\Documentos\GitHub\DI\Unidad12\TresEnRaya-ASP\TresEnRayaASP\TresEnRayaASP\obj\Release\net8.0\PubTmp\Out\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll

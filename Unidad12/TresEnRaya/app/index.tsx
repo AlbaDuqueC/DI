@@ -8,9 +8,11 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { Container } from './core/Container';
-import { JuegoView } from './ui/view/JuegoView';
-import { Juego } from './domain/entities/Juego';
+
+// IMPORTS CORREGIDOS
+import { Container } from '../src/core/Container';
+import { JuegoView } from '../src/ui/view/JuegoView';
+import { Juego } from '../src/domain/entities/Juego';
 
 export default function Index() {
   const [container] = useState(() => Container.getInstance());
@@ -27,7 +29,6 @@ export default function Index() {
   const reconectarTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // Solo ejecutamos la conexión automática la primera vez
     if (!conectadoRef.current) {
       conectadoRef.current = true;
       conectarServidor();
@@ -51,12 +52,9 @@ export default function Index() {
     
     try {
       await container.contextoSignalR.reiniciarJuego();
-      
-      // Limpiamos el estado local
       setEsperandoOponente(false);
       setMiSimbolo(null);
       setJuego(null);
-      
       console.log('✅ Petición de reinicio enviada');
     } catch (error: any) {
       console.error('❌ Error al reiniciar:', error.message);
@@ -68,23 +66,20 @@ export default function Index() {
   const conectarServidor = async () => {
     console.log('🔄 Intentando conectar al servidor...');
     setIntentosConexion(prev => prev + 1);
-    
-    // Verificar si la partida está llena
+
     if (container.contextoSignalR.esPartidaLlena()) {
       console.log('⚠️ La partida está llena, no se puede conectar');
       setPartidaLlena(true);
       setConectado(false);
       return;
     }
-    
-    // 🎯 CONFIGURAR CALLBACKS ANTES DE CONECTAR
+
     container.contextoSignalR.configurarCallbacks({
-      // 🆕 Callback para partida llena
       onPartidaLlena: (mensaje: string) => {
         console.log('🚫 Partida llena:', mensaje);
         setPartidaLlena(true);
         setConectado(false);
-        
+
         Alert.alert(
           'Partida Llena',
           'La sala está completa (2/2 jugadores). Por favor espera o crea otra sala.',
@@ -92,7 +87,6 @@ export default function Index() {
             { 
               text: 'Reintentar en 10s', 
               onPress: () => {
-                // Resetear el flag y reintentar después de 10 segundos
                 setTimeout(() => {
                   console.log('🔄 Reintentando después de 10 segundos...');
                   container.contextoSignalR.resetearPartidaLlena();
@@ -106,58 +100,50 @@ export default function Index() {
         );
       },
 
-      // Callback cuando debe esperar oponente
       onEsperarOponente: (data: any) => {
         console.log('⏳ Esperando oponente:', data);
         setEsperandoOponente(true);
         setMiSimbolo(data.simbolo);
       },
 
-      // Callback cuando se asigna símbolo
       onAsignarSimbolo: (simbolo: string) => {
         console.log('🎯 Callback AsignarSimbolo:', simbolo);
         setMiSimbolo(simbolo);
         container.repositorioJuego.establecerMiSimbolo(simbolo);
-        
+
         const juegoActual = container.juegoViewModel.obtenerJuego(1);
         setJuego(juegoActual);
         setActualizacion(prev => prev + 1);
       },
 
-      // Callback cuando el juego inicia
       onJuegoIniciado: (data: any) => {
         console.log('🎮 Callback JuegoIniciado:', data);
         setEsperandoOponente(false);
         container.repositorioJuego.actualizarDesdeServidor(data.tablero, null);
         container.repositorioJuego.actualizarTurno(data.turno);
-        
+
         const juegoActual = container.juegoViewModel.obtenerJuego(1);
         setJuego(juegoActual);
         setActualizacion(prev => prev + 1);
-        
+
         Alert.alert('¡Juego Iniciado!', 'Ambos jugadores conectados. ¡A jugar!');
       },
 
-      // Callback cuando se actualiza el tablero
       onActualizarTablero: (data: any) => {
         console.log('📊 Callback ActualizarTablero:', data);
         container.repositorioJuego.actualizarDesdeServidor(data.tablero, data.ganador);
         container.repositorioJuego.actualizarTurno(data.turno);
-        
+
         const juegoActual = container.juegoViewModel.obtenerJuego(1);
         setJuego(juegoActual);
         setActualizacion(prev => prev + 1);
       },
 
-      // Callback cuando termina el juego
       onJuegoTerminado: (data: any) => {
         console.log('🏁 Callback JuegoTerminado:', data);
-        Alert.alert('Fin del Juego', data.mensaje, [
-          { text: 'OK', onPress: () => console.log('Juego terminado') }
-        ]);
+        Alert.alert('Fin del Juego', data.mensaje);
       },
 
-      // Callback de errores
       onError: (mensaje: string) => {
         console.error('❌ Callback Error:', mensaje);
         Alert.alert('Error', mensaje);
@@ -171,17 +157,15 @@ export default function Index() {
       console.log('✅ Conexión establecida');
       setEstadoConexion('Conectado');
       setPartidaLlena(false);
-      
-      // Crear juego automáticamente al conectarse
+
       const nuevoJuego = container.juegoViewModel.crearJuegoNuevo(Date.now());
       setJuego(nuevoJuego);
-      
-      // Marcar como esperando oponente inicialmente
+
       setEsperandoOponente(true);
     } else {
       console.error('❌ No se pudo conectar al servidor');
       setEstadoConexion('Error de conexión');
-      
+
       if (!container.contextoSignalR.esPartidaLlena()) {
         Alert.alert(
           'Error de Conexión',
@@ -215,35 +199,32 @@ export default function Index() {
 
     try {
       const miIdJugador = container.repositorioJuego.obtenerMiIdJugador();
-      
+
       if (!miIdJugador) {
         Alert.alert('Error', 'No se pudo identificar tu jugador');
         return;
       }
 
       console.log('📤 Intentando realizar movimiento...');
-      
+
       await container.juegoViewModel.hacerMovimiento(1, miIdJugador, fila, columna);
-      
-      // Actualizar UI inmediatamente (optimistic update)
+
       const juegoActualizado = container.juegoViewModel.obtenerJuego(1);
       setJuego(juegoActualizado);
       setActualizacion(prev => prev + 1);
-      
+
       console.log('✅ Movimiento realizado correctamente');
-      
+
     } catch (error: any) {
       console.error('❌ Error al realizar movimiento:', error);
       Alert.alert('Error', error.message || 'No se pudo realizar el movimiento');
-      
-      // Si hay error de conexión, intentar reconectar
+
       if (error.message?.includes('conexión')) {
         conectarServidor();
       }
     }
   };
 
-  // Pantalla de partida llena
   if (partidaLlena) {
     return (
       <View style={styles.container}>
@@ -254,7 +235,7 @@ export default function Index() {
         <Text style={styles.textoPartidaLlena}>
           Por favor espera a que se libere un espacio.
         </Text>
-        
+
         <TouchableOpacity 
           style={styles.botonReintentar} 
           onPress={() => {
@@ -269,7 +250,6 @@ export default function Index() {
     );
   }
 
-  // Pantalla de conexión
   if (!conectado) {
     return (
       <View style={styles.container}>
@@ -277,7 +257,7 @@ export default function Index() {
         <Text style={styles.texto}>Conectando al servidor...</Text>
         <Text style={styles.textoEstado}>Estado: {estadoConexion}</Text>
         <Text style={styles.textoIntentos}>Intentos: {intentosConexion}</Text>
-        
+
         <TouchableOpacity style={styles.botonReintentar} onPress={conectarServidor}>
           <Text style={styles.textoBoton}>Reintentar Conexión</Text>
         </TouchableOpacity>
@@ -285,11 +265,10 @@ export default function Index() {
     );
   }
 
-  // Pantalla principal del juego
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Tres en Raya</Text>
-      
+
       <View style={styles.infoContainer}>
         <Text style={styles.textoInfo}>Tu símbolo: {miSimbolo || '...'}</Text>
         <Text style={styles.textoInfo}>

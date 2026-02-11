@@ -9,7 +9,10 @@ public static class GameInfo
     public static readonly object _lock = new object();
 
     public static int numJugadores = 0;
-    public static string[,] tablero = new string[3, 3];
+
+    // Cambiado a array escalonado para compatibilidad con la serialización JSON de SignalR
+    public static string[][] tablero = CrearTableroVacio();
+
     public static List<string> conexiones = new List<string>();
 
     public static string turnoActual = "X";
@@ -17,14 +20,25 @@ public static class GameInfo
     public static bool juegoTerminado = false;
     public static string? ganador = null;
 
+    // Método auxiliar para no repetir código de creación de tablero
+    private static string[][] CrearTableroVacio()
+    {
+        return new string[3][]
+        {
+            new string[3],
+            new string[3],
+            new string[3]
+        };
+    }
+
     public static void Jugada(int fila, int columna)
     {
         lock (_lock)
         {
-            // Validamos que el juego no haya terminado y la casilla esté vacía
-            if (!juegoTerminado && tablero[fila, columna] == null)
+            // Cambiado acceso de [fila, columna] a [fila][columna]
+            if (!juegoTerminado && tablero[fila][columna] == null)
             {
-                tablero[fila, columna] = turnoActual;
+                tablero[fila][columna] = turnoActual;
 
                 if (VerificarGanadorInterno(turnoActual))
                 {
@@ -48,7 +62,7 @@ public static class GameInfo
     {
         lock (_lock)
         {
-            tablero = new string[3, 3];
+            tablero = CrearTableroVacio(); // Corregido: ya no usa [3,3]
             turnoActual = "X";
             juegoIniciado = true;
             juegoTerminado = false;
@@ -62,7 +76,7 @@ public static class GameInfo
         lock (_lock)
         {
             numJugadores = 0;
-            tablero = new string[3, 3];
+            tablero = CrearTableroVacio(); // Corregido: ya no usa [3,3]
             conexiones.Clear();
             turnoActual = "X";
             juegoIniciado = false;
@@ -72,21 +86,18 @@ public static class GameInfo
         }
     }
 
-    // Métodos internos privados que NO usan lock porque ya son llamados 
-    // desde métodos que tienen el lock activo (evita bloqueos recursivos innecesarios)
-
     private static bool VerificarGanadorInterno(string simbolo)
     {
-        // Filas y Columnas
+        // Filas y Columnas - Cambiado acceso a [i][j]
         for (int i = 0; i < 3; i++)
         {
-            if (tablero[i, 0] == simbolo && tablero[i, 1] == simbolo && tablero[i, 2] == simbolo) return true;
-            if (tablero[0, i] == simbolo && tablero[1, i] == simbolo && tablero[2, i] == simbolo) return true;
+            if (tablero[i][0] == simbolo && tablero[i][1] == simbolo && tablero[i][2] == simbolo) return true;
+            if (tablero[0][i] == simbolo && tablero[1][i] == simbolo && tablero[2][i] == simbolo) return true;
         }
 
-        // Diagonales
-        if (tablero[0, 0] == simbolo && tablero[1, 1] == simbolo && tablero[2, 2] == simbolo) return true;
-        if (tablero[0, 2] == simbolo && tablero[1, 1] == simbolo && tablero[2, 0] == simbolo) return true;
+        // Diagonales - Cambiado acceso a [i][j]
+        if (tablero[0][0] == simbolo && tablero[1][1] == simbolo && tablero[2][2] == simbolo) return true;
+        if (tablero[0][2] == simbolo && tablero[1][1] == simbolo && tablero[2][0] == simbolo) return true;
 
         return false;
     }
@@ -95,7 +106,7 @@ public static class GameInfo
     {
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
-                if (tablero[i, j] == null) return false;
+                if (tablero[i][j] == null) return false;
         return true;
     }
 }
