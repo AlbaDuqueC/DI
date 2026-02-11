@@ -23,14 +23,33 @@ export const JuegoView: React.FC<JuegoViewProps> = ({
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
+  const normalizarSimbolo = (valor: any): string => {
+    if (valor === null || valor === undefined) return '';
+    if (valor === SimboloJugador.X || valor === 'X') return 'X';
+    if (valor === SimboloJugador.O || valor === 'O') return 'O';
+    return String(valor).toUpperCase();
+  };
+
   const datosJuego = useMemo(() => {
     if (!juego) return null;
+    
+    const simboloGanador = juego.ganador ? normalizarSimbolo(juego.ganador.simbolo) : null;
+    
+    console.log('🔄 USEMEMO datosJuego ejecutado:', {
+      actualizacion,
+      juegoId: juego.id,
+      estado: juego.estado,
+      ganadorObjeto: juego.ganador,
+      simboloGanador: simboloGanador,
+      tablero: juego.tablero
+    });
     
     return {
       tablero: juego.tablero,
       jugadores: juego.jugadores,
       estado: juego.estado,
-      ganador: juego.ganador
+      ganador: juego.ganador,
+      simboloGanador: simboloGanador
     };
   }, [juego, actualizacion]);
 
@@ -44,13 +63,6 @@ export const JuegoView: React.FC<JuegoViewProps> = ({
 
   if (!juego || !datosJuego) return null;
 
-  const normalizarSimbolo = (valor: any): string => {
-    if (valor === null || valor === undefined) return '';
-    if (valor === SimboloJugador.X || valor === 'X') return 'X';
-    if (valor === SimboloJugador.O || valor === 'O') return 'O';
-    return String(valor).toUpperCase();
-  };
-
   const esFinalizado = datosJuego.estado === EstadoJuego.Finalizado;
   
   const jugadorConTurno = datosJuego.jugadores.find(j => j.esTurno);
@@ -63,6 +75,7 @@ export const JuegoView: React.FC<JuegoViewProps> = ({
     simboloDelTurno: simboloDelTurno,
     esMiTurno: esMiTurno,
     esFinalizado: esFinalizado,
+    simboloGanador: datosJuego.simboloGanador,
     jugadores: datosJuego.jugadores.map(j => ({
       simbolo: j.simbolo,
       simboloNormalizado: normalizarSimbolo(j.simbolo),
@@ -71,9 +84,23 @@ export const JuegoView: React.FC<JuegoViewProps> = ({
   });
 
   const config = useMemo(() => {
-    if (datosJuego.ganador) {
-      const ganeYo = normalizarSimbolo(datosJuego.ganador.simbolo) === normalizarSimbolo(miSimbolo);
-      return ganeYo 
+    console.log('🎨 USEMEMO config ejecutado:', {
+      simboloGanador: datosJuego?.simboloGanador,
+      miSimbolo: miSimbolo,
+      miSimboloNormalizado: normalizarSimbolo(miSimbolo),
+      estado: datosJuego?.estado
+    });
+    
+    if (datosJuego?.simboloGanador) {
+      const ganeYo = datosJuego.simboloGanador === normalizarSimbolo(miSimbolo);
+      console.log('🏆 Calculando resultado:', {
+        simboloGanador: datosJuego.simboloGanador,
+        miSimbolo: normalizarSimbolo(miSimbolo),
+        ganeYo,
+        comparacion: `"${datosJuego.simboloGanador}" === "${normalizarSimbolo(miSimbolo)}" = ${ganeYo}`
+      });
+      
+      const resultado = ganeYo 
         ? { 
             t: '¡HAS GANADO!', 
             c: '#F06292', 
@@ -88,7 +115,12 @@ export const JuegoView: React.FC<JuegoViewProps> = ({
             f: 'El gato no está impresionado... 😿', 
             bg: '#EDE7F6' 
           };
+      
+      console.log('🎨 Modal configurado como:', ganeYo ? 'GANASTE' : 'PERDISTE');
+      return resultado;
     }
+    
+    console.log('🤝 Mostrando empate (no hay simboloGanador)');
     return { 
       t: '¡EMPATE!', 
       c: '#BA68C8', 
@@ -96,7 +128,7 @@ export const JuegoView: React.FC<JuegoViewProps> = ({
       f: 'Nadie ganó esta vez. ☁️', 
       bg: '#F3E5F5' 
     };
-  }, [datosJuego.ganador, miSimbolo, actualizacion]);
+  }, [datosJuego?.simboloGanador, miSimbolo]);
 
   return (
     <View style={styles.container}>

@@ -105,7 +105,14 @@ export class RepositorioJuego implements IRepositorioJuego {
   actualizarDesdeServidor(tablero: any, ganador: string | null): void {
     if (!this.juego) return;
 
-    console.log('📥 Actualizando desde servidor:', { tablero, ganador });
+    console.log('📥 ==========================================');
+    console.log('📥 ACTUALIZAR DESDE SERVIDOR');
+    console.log('📥 Datos recibidos:', { 
+      tablero, 
+      ganador,
+      tipoGanador: typeof ganador,
+      ganadorJSON: JSON.stringify(ganador)
+    });
 
     // Actualizar tablero desde servidor
     for (let i = 0; i < 3; i++) {
@@ -123,23 +130,104 @@ export class RepositorioJuego implements IRepositorioJuego {
       }
     }
 
-    // Actualizar ganador
-    if (ganador) {
-      const jugadorGanador = this.juego.jugadores.find(
-        j => j.simbolo.toString() === ganador
-      );
-      if (jugadorGanador) {
-        this.juego.establecerGanador(jugadorGanador);
-        console.log('🏆 Ganador establecido:', ganador);
+    console.log('📋 Tablero actualizado:', this.juego.tablero);
+
+    // Actualizar ganador - SÚPER ROBUSTO
+    if (ganador !== null && ganador !== undefined && ganador !== '') {
+      console.log('🎯 HAY GANADOR - Procesando...');
+      
+      // Intentar extraer el símbolo de diferentes formas
+      let ganadorStr: string;
+      
+      if (typeof ganador === 'object' && ganador !== null) {
+        // Si es un objeto, intentar extraer la propiedad 'simbolo'
+        ganadorStr = String((ganador as any).simbolo || ganador).trim().toUpperCase();
+        console.log('🔍 Ganador es objeto, extraído:', ganadorStr);
       } else {
-        console.log('⚠️ Ganador no encontrado en jugadores, estableciendo estado finalizado');
+        // Si es string/número/otro
+        ganadorStr = String(ganador).trim().toUpperCase();
+        console.log('🔍 Ganador normalizado:', ganadorStr);
+      }
+      
+      console.log('👥 Jugadores en el juego:');
+      this.juego.jugadores.forEach((j, idx) => {
+        console.log(`   [${idx}] ID: ${j.id}, Símbolo: "${j.simbolo}" (tipo: ${typeof j.simbolo}), Valor toString: "${String(j.simbolo)}"`);
+      });
+      
+      // Buscar el jugador ganador - MÚLTIPLES INTENTOS
+      let jugadorGanador: Jugador | undefined;
+      
+      // Intento 1: Comparación con toString()
+      jugadorGanador = this.juego.jugadores.find(j => {
+        const simboloStr = String(j.simbolo).trim().toUpperCase();
+        const match = simboloStr === ganadorStr;
+        console.log(`   Intento 1: "${simboloStr}" === "${ganadorStr}" = ${match}`);
+        return match;
+      });
+      
+      // Intento 2: Si no se encontró, comparación directa con el enum
+      if (!jugadorGanador) {
+        console.log('⚠️ Intento 1 falló, probando intento 2...');
+        const simboloGanador = ganadorStr === 'X' ? SimboloJugador.X : SimboloJugador.O;
+        jugadorGanador = this.juego.jugadores.find(j => {
+          const match = j.simbolo === simboloGanador;
+          console.log(`   Intento 2: ${j.simbolo} === ${simboloGanador} = ${match}`);
+          return match;
+        });
+      }
+      
+      // Intento 3: Si aún no se encontró, buscar por string exacta sin normalizar
+      if (!jugadorGanador) {
+        console.log('⚠️ Intento 2 falló, probando intento 3...');
+        jugadorGanador = this.juego.jugadores.find(j => {
+          const simboloStr = String(j.simbolo);
+          const ganadorOriginal = String(ganador);
+          const match = simboloStr === ganadorOriginal;
+          console.log(`   Intento 3: "${simboloStr}" === "${ganadorOriginal}" = ${match}`);
+          return match;
+        });
+      }
+      
+      if (jugadorGanador) {
+        console.log('✅✅✅ JUGADOR GANADOR ENCONTRADO:', {
+          id: jugadorGanador.id,
+          simbolo: jugadorGanador.simbolo
+        });
+        this.juego.establecerGanador(jugadorGanador);
+        console.log('🏆 Método establecerGanador() ejecutado');
+        console.log('🏆 Estado del juego después:', this.juego.estado);
+        console.log('🏆 Ganador en juego.ganador:', this.juego.ganador);
+        console.log('🏆 Símbolo del ganador:', this.juego.ganador?.simbolo);
+      } else {
+        console.error('❌❌❌ NO SE PUDO ENCONTRAR AL JUGADOR GANADOR');
+        console.error('❌ Esto NO debería pasar');
+        console.error('❌ Datos para debugging:', {
+          ganadorRecibido: ganador,
+          ganadorProcesado: ganadorStr,
+          jugadores: this.juego.jugadores.map(j => ({
+            id: j.id,
+            simbolo: j.simbolo,
+            simboloString: String(j.simbolo)
+          }))
+        });
+        // Marcar como finalizado sin ganador (será empate)
         this.juego.estado = EstadoJuego.Finalizado;
+        console.error('❌ Marcado como finalizado sin ganador (aparecerá como EMPATE)');
       }
     } else if (this.tableroLleno(this.juego)) {
-      // Si no hay ganador pero el tablero está lleno, es empate
-      console.log('🤝 Empate detectado');
+      console.log('🤝 No hay ganador y tablero lleno = EMPATE REAL');
       this.juego.estado = EstadoJuego.Finalizado;
+      (this.juego as any)._ganador = null;
+    } else {
+      console.log('⏳ Juego continúa - no hay ganador y tablero no lleno');
     }
+
+    console.log('📊 ESTADO FINAL DESPUÉS DE ACTUALIZAR:');
+    console.log('   - Estado:', this.juego.estado);
+    console.log('   - Ganador (objeto):', this.juego.ganador);
+    console.log('   - Ganador símbolo:', this.juego.ganador?.simbolo);
+    console.log('   - Ganador es null:', this.juego.ganador === null);
+    console.log('📥 ==========================================');
   }
 
   establecerMiSimbolo(simbolo: string): void {
