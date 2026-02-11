@@ -4,26 +4,25 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSignalR();
 
-// ... (resto de usings)
-
+// 🔧 CORS CORREGIDO - SIN AllowCredentials
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
     {
-        // Esta línea permite que Expo, tu móvil o cualquier navegador se conecte
-        policy.SetIsOriginAllowed(_ => true)
+        policy.SetIsOriginAllowed(_ => true)  // Permitir cualquier origen
               .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials(); // Esto es vital para SignalR
+              .AllowAnyHeader();
+        // ❌ NO incluir .AllowCredentials() - incompatible con SetIsOriginAllowed
     });
 });
 
 var app = builder.Build();
 
-app.UseCors("CorsPolicy"); // Asegúrate de que esté ANTES de MapHub
+// ✅ UseCors ANTES de MapHub
+app.UseCors("CorsPolicy");
 
 app.MapHub<JuegoHub>("/gameHub");
-// ...
+
 app.MapGet("/", () => "Servidor funcionando");
 
 app.Run();

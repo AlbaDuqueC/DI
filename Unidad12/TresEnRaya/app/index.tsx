@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'; // <--- Añade useRef aquí
+import React, { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet,
   Text,
@@ -21,153 +21,178 @@ export default function Index() {
   const [miSimbolo, setMiSimbolo] = useState<string | null>(null);
   const [actualizacion, setActualizacion] = useState(0);
   const [intentosConexion, setIntentosConexion] = useState(0);
+  const [partidaLlena, setPartidaLlena] = useState(false);
 
-  const connects = useRef(false); // 1. Crea una referencia
+  const conectadoRef = useRef(false);
+  const reconectarTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-
-
-
-
-useEffect(() => {
-    // Solo ejecutamos la conexión automática la primera vez que se monta el componente
-    if (!connects.current) {
-        connects.current = true;
-        conectarServidor();
+  useEffect(() => {
+    // Solo ejecutamos la conexión automática la primera vez
+    if (!conectadoRef.current) {
+      conectadoRef.current = true;
+      conectarServidor();
     }
 
     const intervalo = setInterval(() => {
-        // Usamos el método de SignalR directamente para evitar dependencias
-        const estado = container.contextoSignalR.obtenerEstadoConexion();
-        setEstadoConexion(estado);
-    }, 3000);
+      const estado = container.contextoSignalR.obtenerEstadoConexion();
+      setEstadoConexion(estado);
+    }, 2000);
 
     return () => {
-        clearInterval(intervalo);
-        // NOTA: Si quitas el comentario de abajo, cada vez que guardes cambios 
-        // en el código (Hot Reload), el servidor se reiniciará.
-        // container.contextoSignalR.desconectar();
+      clearInterval(intervalo);
+      if (reconectarTimerRef.current) {
+        clearTimeout(reconectarTimerRef.current);
+      }
     };
-}, []);
+  }, []);
 
-const reiniciarJuego = async () => {
-  console.log('🔄 Solicitando reinicio al servidor...');
-  
-  try {
-    // 1. Llamamos al método que ya tienes en tu clase
-    await container.contextoSignalR.reiniciarJuego();
+  const reiniciarJuego = async () => {
+    console.log('🔄 Solicitando reinicio al servidor...');
     
-    // 2. Limpiamos el estado local para que la UI se vea fresca
-    setEsperandoOponente(false);
-    setMiSimbolo(null);
-    setJuego(null);
-    
-    console.log('✅ Petición de reinicio enviada');
-  } catch (error) {
-    console.error('❌ Error al reiniciar:', error);
-    // Si falla el invoke (por pérdida de conexión), entonces sí reconectamos
-    conectarServidor();
-  }
-};
+    try {
+      await container.contextoSignalR.reiniciarJuego();
+      
+      // Limpiamos el estado local
+      setEsperandoOponente(false);
+      setMiSimbolo(null);
+      setJuego(null);
+      
+      console.log('✅ Petición de reinicio enviada');
+    } catch (error: any) {
+      console.error('❌ Error al reiniciar:', error.message);
+      Alert.alert('Error', 'No se pudo reiniciar el juego. Reconectando...');
+      conectarServidor();
+    }
+  };
 
   const conectarServidor = async () => {
     console.log('🔄 Intentando conectar al servidor...');
     setIntentosConexion(prev => prev + 1);
     
+    // Verificar si la partida está llena
+    if (container.contextoSignalR.esPartidaLlena()) {
+      console.log('⚠️ La partida está llena, no se puede conectar');
+      setPartidaLlena(true);
+      setConectado(false);
+      return;
+    }
+    
+    // 🎯 CONFIGURAR CALLBACKS ANTES DE CONECTAR
+    container.contextoSignalR.configurarCallbacks({
+      // 🆕 Callback para partida llena
+      onPartidaLlena: (mensaje: string) => {
+        console.log('🚫 Partida llena:', mensaje);
+        setPartidaLlena(true);
+        setConectado(false);
+        
+        Alert.alert(
+          'Partida Llena',
+          'La sala está completa (2/2 jugadores). Por favor espera o crea otra sala.',
+          [
+            { 
+              text: 'Reintentar en 10s', 
+              onPress: () => {
+                // Resetear el flag y reintentar después de 10 segundos
+                setTimeout(() => {
+                  console.log('🔄 Reintentando después de 10 segundos...');
+                  container.contextoSignalR.resetearPartidaLlena();
+                  setPartidaLlena(false);
+                  conectarServidor();
+                }, 10000);
+              }
+            },
+            { text: 'Cancelar', style: 'cancel' }
+          ]
+        );
+      },
+
+      // Callback cuando debe esperar oponente
+      onEsperarOponente: (data: any) => {
+        console.log('⏳ Esperando oponente:', data);
+        setEsperandoOponente(true);
+        setMiSimbolo(data.simbolo);
+      },
+
+      // Callback cuando se asigna símbolo
+      onAsignarSimbolo: (simbolo: string) => {
+        console.log('🎯 Callback AsignarSimbolo:', simbolo);
+        setMiSimbolo(simbolo);
+        container.repositorioJuego.establecerMiSimbolo(simbolo);
+        
+        const juegoActual = container.juegoViewModel.obtenerJuego(1);
+        setJuego(juegoActual);
+        setActualizacion(prev => prev + 1);
+      },
+
+      // Callback cuando el juego inicia
+      onJuegoIniciado: (data: any) => {
+        console.log('🎮 Callback JuegoIniciado:', data);
+        setEsperandoOponente(false);
+        container.repositorioJuego.actualizarDesdeServidor(data.tablero, null);
+        container.repositorioJuego.actualizarTurno(data.turno);
+        
+        const juegoActual = container.juegoViewModel.obtenerJuego(1);
+        setJuego(juegoActual);
+        setActualizacion(prev => prev + 1);
+        
+        Alert.alert('¡Juego Iniciado!', 'Ambos jugadores conectados. ¡A jugar!');
+      },
+
+      // Callback cuando se actualiza el tablero
+      onActualizarTablero: (data: any) => {
+        console.log('📊 Callback ActualizarTablero:', data);
+        container.repositorioJuego.actualizarDesdeServidor(data.tablero, data.ganador);
+        container.repositorioJuego.actualizarTurno(data.turno);
+        
+        const juegoActual = container.juegoViewModel.obtenerJuego(1);
+        setJuego(juegoActual);
+        setActualizacion(prev => prev + 1);
+      },
+
+      // Callback cuando termina el juego
+      onJuegoTerminado: (data: any) => {
+        console.log('🏁 Callback JuegoTerminado:', data);
+        Alert.alert('Fin del Juego', data.mensaje, [
+          { text: 'OK', onPress: () => console.log('Juego terminado') }
+        ]);
+      },
+
+      // Callback de errores
+      onError: (mensaje: string) => {
+        console.error('❌ Callback Error:', mensaje);
+        Alert.alert('Error', mensaje);
+      }
+    });
+
     const resultado = await container.contextoSignalR.conectar();
     setConectado(resultado);
 
     if (resultado) {
       console.log('✅ Conexión establecida');
       setEstadoConexion('Conectado');
-      configurarEventos();
+      setPartidaLlena(false);
       
       // Crear juego automáticamente al conectarse
       const nuevoJuego = container.juegoViewModel.crearJuegoNuevo(Date.now());
       setJuego(nuevoJuego);
+      
+      // Marcar como esperando oponente inicialmente
+      setEsperandoOponente(true);
     } else {
       console.error('❌ No se pudo conectar al servidor');
       setEstadoConexion('Error de conexión');
       
-      Alert.alert(
-        'Error de Conexión',
-        '¿El servidor ASP.NET está ejecutándose?\n\nAsegúrate de:\n1. Tener el backend ejecutándose\n2. La URL en ContextoSignalR.ts sea correcta',
-        [
-          { text: 'Reintentar', onPress: conectarServidor },
-          { text: 'Cancelar', style: 'cancel' }
-        ]
-      );
+      if (!container.contextoSignalR.esPartidaLlena()) {
+        Alert.alert(
+          'Error de Conexión',
+          '¿El servidor ASP.NET está ejecutándose?\n\nAsegúrate de:\n1. Tener el backend ejecutándose\n2. La URL en ContextoSignalR.ts sea correcta',
+          [
+            { text: 'Reintentar', onPress: conectarServidor },
+            { text: 'Cancelar', style: 'cancel' }
+          ]
+        );
+      }
     }
-  };
-
-  const configurarEventos = () => {
-    console.log('📡 Configurando eventos de SignalR...');
-
-    // Primer jugador esperando
-    container.contextoSignalR.escucharEvento('EsperarOponente', (data: any) => {
-      console.log('👤 Primer jugador - Esperando oponente');
-      setEsperandoOponente(true);
-      setMiSimbolo(data.simbolo);
-      container.repositorioJuego.establecerMiSimbolo(data.simbolo);
-      
-      const juegoActual = container.juegoViewModel.obtenerJuego(1);
-      setJuego(juegoActual);
-      setActualizacion(prev => prev + 1);
-    });
-
-    // Asignar símbolo
-    container.contextoSignalR.escucharEvento('AsignarSimbolo', (simbolo: string) => {
-      console.log('🎯 Símbolo asignado:', simbolo);
-      setMiSimbolo(simbolo);
-      container.repositorioJuego.establecerMiSimbolo(simbolo);
-      
-      const juegoActual = container.juegoViewModel.obtenerJuego(1);
-      setJuego(juegoActual);
-      setActualizacion(prev => prev + 1);
-    });
-
-    // Juego iniciado (segundo jugador se conectó)
-    container.contextoSignalR.escucharEvento('JuegoIniciado', (data: any) => {
-      console.log('🎮 Juego iniciado - 2 jugadores conectados');
-      setEsperandoOponente(false);
-      container.repositorioJuego.actualizarDesdeServidor(data.tablero, null);
-      container.repositorioJuego.actualizarTurno(data.turno);
-      
-      const juegoActual = container.juegoViewModel.obtenerJuego(1);
-      setJuego(juegoActual);
-      setActualizacion(prev => prev + 1);
-    });
-
-    // Actualizar tablero después de movimiento
-    container.contextoSignalR.escucharEvento('ActualizarTablero', (data: any) => {
-      console.log('📊 Tablero actualizado desde servidor');
-      container.repositorioJuego.actualizarDesdeServidor(data.tablero, data.ganador);
-      container.repositorioJuego.actualizarTurno(data.turno);
-      
-      const juegoActual = container.juegoViewModel.obtenerJuego(1);
-      setJuego(juegoActual);
-      setActualizacion(prev => prev + 1);
-    });
-
-    // Juego terminado
-    container.contextoSignalR.escucharEvento('JuegoTerminado', (data: any) => {
-      console.log('🏁 Juego terminado');
-      Alert.alert('Fin del Juego', data.mensaje);
-    });
-
-    // Jugador desconectado
-    container.contextoSignalR.escucharEvento('JugadorDesconectado', (mensaje: string) => {
-      console.log('👋 Jugador desconectado');
-      Alert.alert('Desconexión', mensaje);
-      reiniciarJuego();
-    });
-
-    // Errores
-    container.contextoSignalR.escucharEvento('Error', (mensaje: string) => {
-      console.error('❌ Error del servidor:', mensaje);
-      Alert.alert('Error', mensaje);
-    });
-
-    console.log('✅ Eventos configurados correctamente');
   };
 
   const realizarMovimiento = async (fila: number, columna: number) => {
@@ -200,7 +225,7 @@ const reiniciarJuego = async () => {
       
       await container.juegoViewModel.hacerMovimiento(1, miIdJugador, fila, columna);
       
-      // Actualizar UI inmediatamente
+      // Actualizar UI inmediatamente (optimistic update)
       const juegoActualizado = container.juegoViewModel.obtenerJuego(1);
       setJuego(juegoActualizado);
       setActualizacion(prev => prev + 1);
@@ -210,10 +235,41 @@ const reiniciarJuego = async () => {
     } catch (error: any) {
       console.error('❌ Error al realizar movimiento:', error);
       Alert.alert('Error', error.message || 'No se pudo realizar el movimiento');
+      
+      // Si hay error de conexión, intentar reconectar
+      if (error.message?.includes('conexión')) {
+        conectarServidor();
+      }
     }
   };
 
-  
+  // Pantalla de partida llena
+  if (partidaLlena) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.titulo}>🚫 Partida Llena</Text>
+        <Text style={styles.textoPartidaLlena}>
+          La sala está completa (2/2 jugadores).
+        </Text>
+        <Text style={styles.textoPartidaLlena}>
+          Por favor espera a que se libere un espacio.
+        </Text>
+        
+        <TouchableOpacity 
+          style={styles.botonReintentar} 
+          onPress={() => {
+            container.contextoSignalR.resetearPartidaLlena();
+            setPartidaLlena(false);
+            conectarServidor();
+          }}
+        >
+          <Text style={styles.textoBoton}>Reintentar Conexión</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  // Pantalla de conexión
   if (!conectado) {
     return (
       <View style={styles.container}>
@@ -229,6 +285,7 @@ const reiniciarJuego = async () => {
     );
   }
 
+  // Pantalla principal del juego
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Tres en Raya</Text>
@@ -236,7 +293,7 @@ const reiniciarJuego = async () => {
       <View style={styles.infoContainer}>
         <Text style={styles.textoInfo}>Tu símbolo: {miSimbolo || '...'}</Text>
         <Text style={styles.textoInfo}>
-          Estado: {esperandoOponente ? 'Esperando oponente...' : 'En juego'}
+          Estado: {esperandoOponente ? '⏳ Esperando oponente...' : '🎮 En juego'}
         </Text>
         <Text style={[styles.textoInfo, styles.textoConexion]}>
           Conexión: {estadoConexion}
@@ -246,7 +303,7 @@ const reiniciarJuego = async () => {
       {esperandoOponente && (
         <View style={styles.esperandoContainer}>
           <ActivityIndicator size="large" color="#FF6B6B" />
-          <Text style={styles.textoEsperando}>Esperando oponente...</Text>
+          <Text style={styles.textoEsperando}>Esperando al segundo jugador...</Text>
         </View>
       )}
 
@@ -310,6 +367,13 @@ const styles = StyleSheet.create({
     color: '#FF6B6B',
     marginTop: 10,
     fontWeight: '600',
+  },
+  textoPartidaLlena: {
+    fontSize: 18,
+    color: '#E74C3C',
+    textAlign: 'center',
+    marginVertical: 10,
+    paddingHorizontal: 20,
   },
   botonReiniciar: {
     backgroundColor: '#E74C3C',
